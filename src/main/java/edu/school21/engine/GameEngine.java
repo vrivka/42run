@@ -7,7 +7,6 @@ import edu.school21.engine.window.Window;
 import java.io.IOException;
 
 public class GameEngine implements Runnable {
-    public static final int TARGET_UPS = 30;
     private final Window window;
     private final GameLogic gameLogic;
     private final MouseInput mouseInput;
@@ -31,6 +30,7 @@ public class GameEngine implements Runnable {
     }
 
     private void cleanup() {
+        gameLogic.cleanup();
         window.close();
     }
 
@@ -41,22 +41,20 @@ public class GameEngine implements Runnable {
     }
 
     protected void gameLoop() {
-        float interval = 1f / TARGET_UPS;
-
         while (!window.isShouldClose()) {
             input();
-            update(interval);
+            update();
             render();
         }
     }
 
     protected void input() {
-        mouseInput.input(window);
+        mouseInput.input();
         gameLogic.input(window, mouseInput);
     }
 
-    protected void update(float interval) {
-        gameLogic.update(interval, mouseInput);
+    protected void update() {
+        gameLogic.update(mouseInput);
     }
 
     protected void render() {

@@ -1,5 +1,6 @@
 package edu.school21.engine.render;
 
+import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -14,16 +15,18 @@ public class Mesh {
     private final int vertexArrayObjectId;
     private final int vertexBufferObjectId;
     private final int indicesBufferObjectId;
-    private final int textureBufferObjectId;
+    private final int texturesCordsBufferObjectId;
+    private final int normalsBufferObjectId;
     private final int vertexCount;
-    private final Texture texture;
+    private Texture texture = null;
+    private Vector3f color = null;
 
-    public Mesh(float[] vertices, int[] indices, float[] textureCords, Texture texture) {
+    public Mesh(float[] vertices, int[] indices, float[] textureCords, float[] normals) {
         FloatBuffer verticesBuffer = null;
         IntBuffer indicesBuffer = null;
         FloatBuffer texturesCordsBuffer = null;
+        FloatBuffer normalsBuffer = null;
         vertexCount = indices.length;
-        this.texture = texture;
 
         try {
             vertexArrayObjectId = glGenVertexArrays();
@@ -38,14 +41,21 @@ public class Mesh {
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
-
-            textureBufferObjectId = glGenBuffers();
+            texturesCordsBufferObjectId = glGenBuffers();
             texturesCordsBuffer = MemoryUtil.memAllocFloat(textureCords.length);
             texturesCordsBuffer.put(textureCords).flip();
-            glBindBuffer(GL_ARRAY_BUFFER, textureBufferObjectId);
+            glBindBuffer(GL_ARRAY_BUFFER, texturesCordsBufferObjectId);
             glBufferData(GL_ARRAY_BUFFER, texturesCordsBuffer, GL_STATIC_DRAW);
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
+
+            normalsBufferObjectId = glGenBuffers();
+            normalsBuffer = MemoryUtil.memAllocFloat(normals.length);
+            normalsBuffer.put(normals).flip();
+            glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObjectId);
+            glBufferData(GL_ARRAY_BUFFER, normalsBuffer, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(2);
+            glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
             indicesBufferObjectId = glGenBuffers();
             indicesBuffer = MemoryUtil.memAllocInt(indices.length);
@@ -65,30 +75,70 @@ public class Mesh {
             if (textureCords != null) {
                 MemoryUtil.memFree(texturesCordsBuffer);
             }
+            if (normalsBuffer != null) {
+                MemoryUtil.memFree(normalsBuffer);
+            }
         }
     }
 
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    public boolean isTextured() {
+        return texture != null;
+    }
+
+    public Vector3f getColor() {
+        return color;
+    }
+
+    public void setColor(Vector3f color) {
+        this.color = color;
+    }
+
     public void render() {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture.getId());
+        if (texture != null) {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture.getId());
+        }
 
         glBindVertexArray(vertexArrayObjectId);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
 
         glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
 
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
         glBindVertexArray(0);
     }
 
     public void cleanUp() {
         glDisableVertexAttribArray(0);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(vertexBufferObjectId);
         glDeleteBuffers(indicesBufferObjectId);
-        glDeleteBuffers(textureBufferObjectId);
+        glDeleteBuffers(texturesCordsBufferObjectId);
+        glDeleteBuffers(normalsBufferObjectId);
 
-        texture.cleanup();
+        if (texture != null) {
+            texture.cleanup();
+        }
 
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
         glBindVertexArray(0);
         glDeleteVertexArrays(vertexArrayObjectId);
     }

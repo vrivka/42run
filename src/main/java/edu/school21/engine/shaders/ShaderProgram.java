@@ -2,6 +2,7 @@ package edu.school21.engine.shaders;
 
 import edu.school21.engine.shaders.exceptions.*;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.FloatBuffer;
@@ -63,7 +64,7 @@ public class ShaderProgram {
         uniforms.put(uniformName, uniformLocation);
     }
 
-    public void setMat4fUniform(String uniformName, Matrix4f matrix) {
+    public void setUniform(String uniformName, Matrix4f matrix) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer uniformBuffer = stack.mallocFloat(16);
 
@@ -72,8 +73,17 @@ public class ShaderProgram {
         }
     }
 
-    public void set1iUniform(String uniformName, int value) {
-        glUniform1i(uniforms.get(uniformName), value);
+    public void setUniform(String uniformName, int integer) {
+        glUniform1i(uniforms.get(uniformName), integer);
+    }
+
+    public void setUniform(String uniformName, Vector3f vector) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer uniformBuffer = stack.mallocFloat(3);
+
+            vector.get(uniformBuffer);
+            glUniform3fv(uniforms.get(uniformName), uniformBuffer);
+        }
     }
 
     public void link() {

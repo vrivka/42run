@@ -23,12 +23,15 @@ public class Transformation {
 
     public Matrix4f getModelView(GameItem gameItem, Matrix4f viewMatrix) {
         Vector3f rotation = gameItem.getRotation();
+
         modelView.identity().translate(gameItem.getPosition()).
-                rotateX((float)Math.toRadians(-rotation.x)).
-                rotateY((float)Math.toRadians(-rotation.y)).
-                rotateZ((float)Math.toRadians(-rotation.z)).
+                rotateX((float) Math.toRadians(-rotation.x)).
+                rotateY((float) Math.toRadians(-rotation.y)).
+                rotateZ((float) Math.toRadians(-rotation.z)).
                 scale(gameItem.getScale());
+
         Matrix4f viewCurr = new Matrix4f(viewMatrix);
+
         return viewCurr.mul(modelView);
     }
 
@@ -37,8 +40,8 @@ public class Transformation {
         Vector3f rotation = camera.getRotation();
 
         view.identity()
-                .rotate((float)Math.toRadians(rotation.x), new Vector3f(1, 0, 0))
-                .rotate((float)Math.toRadians(rotation.y), new Vector3f(0, 1, 0))
+                .rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0))
+                .rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0))
                 .translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
         return view;
     }

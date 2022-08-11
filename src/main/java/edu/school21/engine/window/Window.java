@@ -30,6 +30,10 @@ public class Window implements Closeable {
         return glfwGetKey(window, keyCode) == GLFW_PRESS;
     }
 
+    public boolean isKeyReleased(int keyCode) {
+        return glfwGetKey(window, keyCode) == GLFW_RELEASE;
+    }
+
     public boolean isShouldClose() {
         return glfwWindowShouldClose(window);
     }
@@ -99,6 +103,7 @@ public class Window implements Closeable {
         GL.createCapabilities();
         setClearColor(0.5f, 0.5f, 0.5f, 0f);
         glEnable(GL_DEPTH_TEST);
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     public void update() {

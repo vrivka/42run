@@ -29,6 +29,8 @@ public class Renderer {
         shaderProgram.createUniform("projection");
         shaderProgram.createUniform("model_view");
         shaderProgram.createUniform("texture_sampler");
+        shaderProgram.createUniform("color");
+        shaderProgram.createUniform("useColor");
     }
 
     public static void clear() {
@@ -43,13 +45,16 @@ public class Renderer {
         Matrix4f projection = transformation.getProjection(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
         Matrix4f viewMatrix = transformation.getViewMatrix(camera);
 
-        shaderProgram.setMat4fUniform("projection", projection);
-        shaderProgram.set1iUniform("texture_sampler", 0);
+        shaderProgram.setUniform("projection", projection);
+        shaderProgram.setUniform("texture_sampler", 0);
 
         for (GameItem gameItem : gameItems) {
             Matrix4f world = transformation.getModelView(gameItem, viewMatrix);
+            Mesh mesh = gameItem.getMesh();
 
-            shaderProgram.setMat4fUniform("model_view", world);
+            shaderProgram.setUniform("model_view", world);
+            shaderProgram.setUniform("color", mesh.getColor());
+            shaderProgram.setUniform("useColor", mesh.isTextured() ? 0 : 1);
             gameItem.getMesh().render();
         }
 
