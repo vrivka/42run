@@ -1,5 +1,6 @@
 package edu.school21.engine.render;
 
+import edu.school21.engine.shaders.fragment.struct.Material;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
@@ -18,15 +19,16 @@ public class Mesh {
     private final int texturesCordsBufferObjectId;
     private final int normalsBufferObjectId;
     private final int vertexCount;
-    private Texture texture = null;
     private Vector3f color = null;
+    private Material material;
 
-    public Mesh(float[] vertices, int[] indices, float[] textureCords, float[] normals) {
+    public Mesh(float[] vertices, int[] indices, float[] textureCords, float[] normals, Material material) {
         FloatBuffer verticesBuffer = null;
         IntBuffer indicesBuffer = null;
         FloatBuffer texturesCordsBuffer = null;
         FloatBuffer normalsBuffer = null;
         vertexCount = indices.length;
+        this.material = material;
 
         try {
             vertexArrayObjectId = glGenVertexArrays();
@@ -81,20 +83,16 @@ public class Mesh {
         }
     }
 
-    public Texture getTexture() {
-        return texture;
-    }
-
-    public void setTexture(Texture texture) {
-        this.texture = texture;
-    }
-
-    public boolean isTextured() {
-        return texture != null;
-    }
-
     public Vector3f getColor() {
         return color;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
     }
 
     public void setColor(Vector3f color) {
@@ -102,9 +100,9 @@ public class Mesh {
     }
 
     public void render() {
-        if (texture != null) {
+        if (material.isTextured()) {
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture.getId());
+            glBindTexture(GL_TEXTURE_2D, material.getTexture().getId());
         }
 
         glBindVertexArray(vertexArrayObjectId);
@@ -132,8 +130,8 @@ public class Mesh {
         glDeleteBuffers(texturesCordsBufferObjectId);
         glDeleteBuffers(normalsBufferObjectId);
 
-        if (texture != null) {
-            texture.cleanup();
+        if (material.isTextured()) {
+            material.getTexture().cleanup();
         }
 
         glDisableVertexAttribArray(0);

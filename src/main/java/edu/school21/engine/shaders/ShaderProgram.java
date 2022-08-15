@@ -1,8 +1,12 @@
 package edu.school21.engine.shaders;
 
 import edu.school21.engine.shaders.exceptions.*;
+import edu.school21.engine.shaders.fragment.struct.Attenuation;
+import edu.school21.engine.shaders.fragment.struct.Material;
+import edu.school21.engine.shaders.fragment.struct.PointLight;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.FloatBuffer;
@@ -64,6 +68,23 @@ public class ShaderProgram {
         uniforms.put(uniformName, uniformLocation);
     }
 
+    public void createPointLightUniform(String uniformName) {
+        createUniform(uniformName + ".color");
+        createUniform(uniformName + ".position");
+        createUniform(uniformName + ".intensity");
+        createUniform(uniformName + ".attenuation.constant");
+        createUniform(uniformName + ".attenuation.linear");
+        createUniform(uniformName + ".attenuation.exponent");
+    }
+
+    public void createMaterialUniform(String uniformName) {
+        createUniform(uniformName + ".ambient");
+        createUniform(uniformName + ".diffuse");
+        createUniform(uniformName + ".specular");
+        createUniform(uniformName + ".hasTexture");
+        createUniform(uniformName + ".reflectance");
+    }
+
     public void setUniform(String uniformName, Matrix4f matrix) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer uniformBuffer = stack.mallocFloat(16);
@@ -71,10 +92,6 @@ public class ShaderProgram {
             matrix.get(uniformBuffer);
             glUniformMatrix4fv(uniforms.get(uniformName), false, uniformBuffer);
         }
-    }
-
-    public void setUniform(String uniformName, int integer) {
-        glUniform1i(uniforms.get(uniformName), integer);
     }
 
     public void setUniform(String uniformName, Vector3f vector) {
@@ -85,6 +102,43 @@ public class ShaderProgram {
             glUniform3fv(uniforms.get(uniformName), uniformBuffer);
         }
     }
+
+    public void setUniform(String uniformName, Vector4f vector) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer uniformBuffer = stack.mallocFloat(4);
+
+            vector.get(uniformBuffer);
+            glUniform4fv(uniforms.get(uniformName), uniformBuffer);
+        }
+    }
+
+    public void setUniform(String uniformName, int integer) {
+        glUniform1i(uniforms.get(uniformName), integer);
+    }
+
+    public void setUniform(String uniformName, float floatVal) {
+        glUniform1f(uniforms.get(uniformName), floatVal);
+    }
+
+    public void setUniform(String uniformName, PointLight pointLight) {
+        Attenuation attenuation = pointLight.getAttenuation();
+
+        setUniform(uniformName + ".color", pointLight.getColor() );
+        setUniform(uniformName + ".position", pointLight.getPosition());
+        setUniform(uniformName + ".intensity", pointLight.getIntensity());
+        setUniform(uniformName + ".attenuation.constant", attenuation.getConstant());
+        setUniform(uniformName + ".attenuation.linear", attenuation.getLinear());
+        setUniform(uniformName + ".attenuation.exponent", attenuation.getExponent());
+    }
+
+    public void setUniform(String uniformName, Material material) {
+        setUniform(uniformName + ".ambient", material.getAmbient());
+        setUniform(uniformName + ".diffuse", material.getDiffuse());
+        setUniform(uniformName + ".specular", material.getSpecular());
+        setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
+        setUniform(uniformName + ".reflectance", material.getReflectance());
+    }
+
 
     public void link() {
         glLinkProgram(programId);

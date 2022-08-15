@@ -4,11 +4,15 @@ import edu.school21.engine.render.Camera;
 import edu.school21.engine.render.Mesh;
 import edu.school21.engine.render.Renderer;
 import edu.school21.engine.render.Texture;
+import edu.school21.engine.shaders.fragment.struct.Attenuation;
+import edu.school21.engine.shaders.fragment.struct.Material;
+import edu.school21.engine.shaders.fragment.struct.PointLight;
 import edu.school21.engine.window.MouseInput;
 import edu.school21.engine.window.Window;
 import edu.school21.utils.OBJLoader;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -23,6 +27,8 @@ public class DummyGame implements GameLogic {
     private final List<GameItem> gameItems;
     private final Vector3f cameraInc;
     private final Camera camera;
+    private Vector3f ambientLight;
+    private PointLight pointLight;
 
     public DummyGame() {
         this.renderer = new Renderer();
@@ -34,7 +40,7 @@ public class DummyGame implements GameLogic {
     @Override
     public void init() throws IOException {
         renderer.init();
-
+/*
         float[] vertices = new float[]{
                 -0.5f, 0.5f, 0.5f,
                 -0.5f, -0.5f, 0.5f,
@@ -129,15 +135,32 @@ public class DummyGame implements GameLogic {
         gameItems.add(gameItem1);
         gameItems.add(gameItem2);
         gameItems.add(gameItem3);
-        gameItems.add(gameItem4);
+        gameItems.add(gameItem4);*/
 
-        mesh = OBJLoader.loadMesh("/teapot2.obj");
-        mesh.setColor(new Vector3f(1f, 1f, 0f));
+        float reflectance = 1f;
+
+        Mesh mesh = OBJLoader.loadMesh("/aircraft.obj");
+        Texture texture = new Texture("src/main/resources/grassblock.png");
+        Material material = new Material(texture);
+        material.setAmbient(new Vector4f(0.7f, 0.7f, 0.7f, 1f));
+        material.setDiffuse(new Vector4f(1f, 1f, 1f, 1f));
+        material.setSpecular(new Vector4f(1f, 1f, 1f, 1f));
+        material.setReflectance(reflectance);
+
+        mesh.setMaterial(material);
         GameItem gameItem = new GameItem(mesh);
-        gameItem.setScale(0.1f);
-        gameItem.setPosition(0, 0.4f, -2);
-        gameItem.setRotation(0, 0.5f, 0);
+        gameItem.setScale(0.5f);
+        gameItem.setPosition(0, -1, -2);
         gameItems.add(gameItem);
+
+        ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+        Vector3f lightColour = new Vector3f(1, 1, 1);
+        Vector3f lightPosition = new Vector3f(0, 0, 1);
+        float lightIntensity = 1.0f;
+        pointLight = new PointLight(lightColour, lightPosition, lightIntensity);
+        Attenuation att = new Attenuation(0.0f, 0.0f, 1.0f);
+        pointLight.setAttenuation(att);
+        pointLight.setPosition(camera.getPosition());
     }
 
     @Override
@@ -167,6 +190,14 @@ public class DummyGame implements GameLogic {
         } else if (window.isKeyReleased(GLFW_KEY_LEFT_SHIFT)) {
             CAMERA_POS_STEP = 0.05f;
         }
+
+        float lightPos = pointLight.getPosition().z;
+
+        if (window.isKeyPressed(GLFW_KEY_N)) {
+            this.pointLight.getPosition().z = lightPos + 0.1f;
+        } else if (window.isKeyPressed(GLFW_KEY_M)) {
+            this.pointLight.getPosition().z = lightPos - 0.1f;
+        }
     }
 
     @Override
@@ -183,7 +214,7 @@ public class DummyGame implements GameLogic {
 
     @Override
     public void render(Window window) {
-        renderer.render(window, camera, gameItems.toArray(GameItem[]::new));
+        renderer.render(window, camera, gameItems.toArray(GameItem[]::new), ambientLight, pointLight);
     }
 
     @Override

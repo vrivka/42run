@@ -17,6 +17,7 @@ public class Transformation {
 
     public Matrix4f getProjection(float fov, float width, float height, float zNear, float zFar) {
         float aspect = width / height;
+
         projection.identity().perspective(fov, aspect, zNear, zFar);
         return projection;
     }
@@ -41,10 +42,8 @@ public class Transformation {
 
         view.identity()
                 .rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0))
-                .rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0))
-                .translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+                .rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0));
+        view.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
         return view;
     }
-
-
 }

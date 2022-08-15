@@ -8,8 +8,12 @@ uniform mat4 projection;
 uniform mat4 model_view;
 
 out vec2 TextCords;
+out vec3 Normal;
+out vec3 Position;
 
 void main() {
     gl_Position = projection * model_view * vec4(position, 1.0);
     TextCords = textCord;
+    Normal = normalize(model_view * vec4(normal, 0)).xyz;
+    Position = (model_view * vec4(position, 1.0)).xyz;
 }

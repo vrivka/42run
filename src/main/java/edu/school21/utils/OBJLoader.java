@@ -20,32 +20,31 @@ public class OBJLoader {
         for (String line : lines) {
             String[] tokens = line.split("\\s+");
             switch (tokens[0]) {
-                case "v":
+                case "v" -> {
                     Vector3f vec3f = new Vector3f(
                             Float.parseFloat(tokens[1]),
                             Float.parseFloat(tokens[2]),
                             Float.parseFloat(tokens[3]));
                     vertices.add(vec3f);
-                    break;
-                case "vt":
+                }
+                case "vt" -> {
                     Vector2f vec2f = new Vector2f(
                             Float.parseFloat(tokens[1]),
                             Float.parseFloat(tokens[2]));
                     textureCords.add(vec2f);
-                    break;
-                case "vn":
+                }
+                case "vn" -> {
                     Vector3f vec3fNorm = new Vector3f(
                             Float.parseFloat(tokens[1]),
                             Float.parseFloat(tokens[2]),
                             Float.parseFloat(tokens[3]));
                     normals.add(vec3fNorm);
-                    break;
-                case "f":
+                }
+                case "f" -> {
                     Face face = new Face(tokens[1], tokens[2], tokens[3]);
                     faces.add(face);
-                    break;
-                default:
-                    break;
+                }
+                default -> {}
             }
         }
         return reorderLists(vertices, textureCords, normals, faces);
@@ -108,20 +107,20 @@ public class OBJLoader {
         List<Integer> indices = new ArrayList<>();
         float[] posArr = new float[posList.size() * 3];
         int i = 0;
-        
+
         for (Vector3f pos : posList) {
             posArr[i * 3] = pos.x;
             posArr[i * 3 + 1] = pos.y;
             posArr[i * 3 + 2] = pos.z;
             i++;
         }
-        
+
         float[] textCordArr = new float[posList.size() * 2];
         float[] normArr = new float[posList.size() * 3];
 
         for (Face face : facesList) {
             IdxGroup[] faceVertexIndices = face.getFaceVertexIndices();
-            
+
             for (IdxGroup indValue : faceVertexIndices) {
                 processFaceVertex(indValue, textCordList, normList,
                         indices, textCordArr, normArr);
@@ -129,19 +128,19 @@ public class OBJLoader {
         }
         int[] indicesArr = indices.stream().mapToInt((Integer v) -> v).toArray();
 
-        return new Mesh(posArr, indicesArr, textCordArr, normArr);
+        return new Mesh(posArr, indicesArr, textCordArr, normArr, null);
     }
 
-    private static void processFaceVertex(IdxGroup indices, List<Vector2f> textCoordList, List<Vector3f> normList, List<Integer> indicesList, float[] texCoordArr, float[] normArr) {
+    private static void processFaceVertex(IdxGroup indices, List<Vector2f> textCordList, List<Vector3f> normList, List<Integer> indicesList, float[] texCordArr, float[] normArr) {
         int posIndex = indices.idxPos;
 
         indicesList.add(posIndex);
 
         if (indices.idxTextCord >= 0) {
-            Vector2f textCord = textCoordList.get(indices.idxTextCord);
+            Vector2f textCord = textCordList.get(indices.idxTextCord);
 
-            texCoordArr[posIndex * 2] = textCord.x;
-            texCoordArr[posIndex * 2 + 1] = 1 - textCord.y;
+            texCordArr[posIndex * 2] = textCord.x;
+            texCordArr[posIndex * 2 + 1] = 1 - textCord.y;
         }
         if (indices.idxVecNormal >= 0) {
             Vector3f vecNorm = normList.get(indices.idxVecNormal);
