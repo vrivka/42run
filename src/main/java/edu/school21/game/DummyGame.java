@@ -5,6 +5,7 @@ import edu.school21.engine.render.Mesh;
 import edu.school21.engine.render.Renderer;
 import edu.school21.engine.render.Texture;
 import edu.school21.engine.shaders.fragment.struct.Attenuation;
+import edu.school21.engine.shaders.fragment.struct.DirectionalLight;
 import edu.school21.engine.shaders.fragment.struct.Material;
 import edu.school21.engine.shaders.fragment.struct.PointLight;
 import edu.school21.engine.window.MouseInput;
@@ -29,6 +30,9 @@ public class DummyGame implements GameLogic {
     private final Camera camera;
     private Vector3f ambientLight;
     private PointLight pointLight;
+    private DirectionalLight directionalLight;
+    private float lightAngle;
+
 
     public DummyGame() {
         this.renderer = new Renderer();
@@ -40,127 +44,34 @@ public class DummyGame implements GameLogic {
     @Override
     public void init() throws IOException {
         renderer.init();
-/*
-        float[] vertices = new float[]{
-                -0.5f, 0.5f, 0.5f,
-                -0.5f, -0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,
 
-                -0.5f, 0.5f, -0.5f,
-                0.5f, 0.5f, -0.5f,
-                -0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f,
+        float reflectance = 0.1f;
 
-                -0.5f, 0.5f, -0.5f,
-                0.5f, 0.5f, -0.5f,
-                -0.5f, 0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,
-
-                0.5f, 0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f,
-                -0.5f, 0.5f, 0.5f,
-                -0.5f, -0.5f, 0.5f,
-
-                -0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f,
-                -0.5f, -0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f
-        };
-        float[] textCoords = new float[]{
-                0.0f, 0.0f,
-                0.0f, 0.5f,
-                0.5f, 0.5f,
-                0.5f, 0.0f,
-
-                0.0f, 0.0f,
-                0.5f, 0.0f,
-                0.0f, 0.5f,
-                0.5f, 0.5f,
-
-                0.0f, 0.5f,
-                0.5f, 0.5f,
-                0.0f, 1.0f,
-                0.5f, 1.0f,
-
-                0.0f, 0.0f,
-                0.0f, 0.5f,
-                0.5f, 0.0f,
-                0.5f, 0.5f,
-
-                0.5f, 0.0f,
-                1.0f, 0.0f,
-                0.5f, 0.5f,
-                1.0f, 0.5f
-        };
-        int[] indices = new int[]{
-                0, 1, 3,
-                3, 1, 2,
-
-                8, 10, 11,
-                9, 8, 11,
-
-                12, 13, 7,
-                5, 12, 7,
-
-                14, 15, 6,
-                4, 14, 6,
-
-                16, 18, 19,
-                17, 16, 19,
-
-                4, 6, 7,
-                5, 4, 7
-        };
-
-        Mesh mesh = new Mesh(vertices, indices, textCoords, new float[]{});
-        mesh.setTexture(new Texture("src/main/resources/grassblock.png"));
-        mesh.setColor(new Vector3f(0f, 1f, 0f));
-        GameItem gameItem1 = new GameItem(mesh);
-        gameItem1.setScale(0.5f);
-        gameItem1.setPosition(0, 0, -2);
-
-        GameItem gameItem2 = new GameItem(mesh);
-        gameItem2.setScale(0.5f);
-        gameItem2.setPosition(0.5f, 0.5f, -2);
-
-        GameItem gameItem3 = new GameItem(mesh);
-        gameItem3.setScale(0.5f);
-        gameItem3.setPosition(0, 0, -2.5f);
-
-        GameItem gameItem4 = new GameItem(mesh);
-        gameItem4.setScale(0.5f);
-
-        gameItem4.setPosition(0.5f, 0, -2.5f);
-        gameItems.add(gameItem1);
-        gameItems.add(gameItem2);
-        gameItems.add(gameItem3);
-        gameItems.add(gameItem4);*/
-
-        float reflectance = 1f;
-
-        Mesh mesh = OBJLoader.loadMesh("/aircraft.obj");
+        Mesh mesh = OBJLoader.loadMesh("/cube.obj");
         Texture texture = new Texture("src/main/resources/grassblock.png");
         Material material = new Material(texture);
         material.setAmbient(new Vector4f(0.7f, 0.7f, 0.7f, 1f));
-        material.setDiffuse(new Vector4f(1f, 1f, 1f, 1f));
-        material.setSpecular(new Vector4f(1f, 1f, 1f, 1f));
         material.setReflectance(reflectance);
 
         mesh.setMaterial(material);
         GameItem gameItem = new GameItem(mesh);
-        gameItem.setScale(0.5f);
-        gameItem.setPosition(0, -1, -2);
+        gameItem.setScale(0.25f);
+        gameItem.setPosition(0, -2, -3);
+        gameItem.setRotation(0, 0, 0);
         gameItems.add(gameItem);
 
         ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
         Vector3f lightColour = new Vector3f(1, 1, 1);
         Vector3f lightPosition = new Vector3f(0, 0, 1);
-        float lightIntensity = 1.0f;
+        float lightIntensity = 0.1f;
         pointLight = new PointLight(lightColour, lightPosition, lightIntensity);
         Attenuation att = new Attenuation(0.0f, 0.0f, 1.0f);
         pointLight.setAttenuation(att);
         pointLight.setPosition(camera.getPosition());
+
+        lightPosition = new Vector3f(-1, 0, 0);
+        lightColour = new Vector3f(1, 1, 1);
+        directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
     }
 
     @Override
@@ -190,14 +101,6 @@ public class DummyGame implements GameLogic {
         } else if (window.isKeyReleased(GLFW_KEY_LEFT_SHIFT)) {
             CAMERA_POS_STEP = 0.05f;
         }
-
-        float lightPos = pointLight.getPosition().z;
-
-        if (window.isKeyPressed(GLFW_KEY_N)) {
-            this.pointLight.getPosition().z = lightPos + 0.1f;
-        } else if (window.isKeyPressed(GLFW_KEY_M)) {
-            this.pointLight.getPosition().z = lightPos - 0.1f;
-        }
     }
 
     @Override
@@ -210,11 +113,38 @@ public class DummyGame implements GameLogic {
             Vector2f rotVec = mouseInput.getDisplVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
+
+        lightAngle += 0.5f;
+
+        if (lightAngle > 90) {
+            directionalLight.setIntensity(0);
+
+            if (lightAngle >= 90) {
+                lightAngle = -90;
+            }
+        } else if (lightAngle <= -80 || lightAngle >= 80) {
+            float factor = 1 - (Math.abs(lightAngle) - 80) / 10.0f;
+
+            directionalLight.setIntensity(factor);
+            directionalLight.getColor().y = Math.max(factor, 0.9f);
+            directionalLight.getColor().z = Math.max(factor, 0.5f);
+        } else {
+            directionalLight.setIntensity(1);
+            directionalLight.getColor().x = 1;
+            directionalLight.getColor().y = 1;
+            directionalLight.getColor().z = 1;
+        }
+        double angRad = Math.toRadians(lightAngle);
+
+        directionalLight.getDirection().x = (float) Math.sin(angRad);
+        directionalLight.getDirection().y = (float) Math.cos(angRad);
+
+//        gameItems.get(0).setRotation(0, 5f * (float) glfwGetTime(), 0);
     }
 
     @Override
     public void render(Window window) {
-        renderer.render(window, camera, gameItems.toArray(GameItem[]::new), ambientLight, pointLight);
+        renderer.render(window, camera, gameItems.toArray(GameItem[]::new), ambientLight, pointLight, directionalLight);
     }
 
     @Override

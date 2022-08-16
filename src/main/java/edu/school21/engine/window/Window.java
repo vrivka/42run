@@ -103,7 +103,6 @@ public class Window implements Closeable {
         GL.createCapabilities();
         setClearColor(0.5f, 0.5f, 0.5f, 0f);
         glEnable(GL_DEPTH_TEST);
-//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     public void update() {

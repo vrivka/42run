@@ -2,6 +2,7 @@ package edu.school21.engine.shaders;
 
 import edu.school21.engine.shaders.exceptions.*;
 import edu.school21.engine.shaders.fragment.struct.Attenuation;
+import edu.school21.engine.shaders.fragment.struct.DirectionalLight;
 import edu.school21.engine.shaders.fragment.struct.Material;
 import edu.school21.engine.shaders.fragment.struct.PointLight;
 import org.joml.Matrix4f;
@@ -85,6 +86,12 @@ public class ShaderProgram {
         createUniform(uniformName + ".reflectance");
     }
 
+    public void createDirectionalLightUniform(String uniformName) {
+        createUniform(uniformName + ".color");
+        createUniform(uniformName + ".direction");
+        createUniform(uniformName + ".intensity");
+    }
+
     public void setUniform(String uniformName, Matrix4f matrix) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer uniformBuffer = stack.mallocFloat(16);
@@ -139,6 +146,12 @@ public class ShaderProgram {
         setUniform(uniformName + ".reflectance", material.getReflectance());
     }
 
+    public void setUniform(String uniformName, DirectionalLight directionalLight) {
+        setUniform(uniformName + ".color", directionalLight.getColor());
+        setUniform(uniformName + ".direction", directionalLight.getDirection());
+        setUniform(uniformName + ".intensity", directionalLight.getIntensity());
+
+    }
 
     public void link() {
         glLinkProgram(programId);

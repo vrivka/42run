@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             GameLogic gameLogic = new DummyGame();
-            GameEngine gameEng = new GameEngine("42run", 800, 600, gameLogic);
+            GameEngine gameEng = new GameEngine("42run", 1600, 900, gameLogic);
             gameEng.run();
         } catch (Exception excp) {
             excp.printStackTrace();
