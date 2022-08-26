@@ -37,7 +37,11 @@ public class GameEngine implements Runnable {
     protected void init() throws IOException {
         window.init();
         mouseInput.init(window);
-        gameLogic.init();
+        try {
+            gameLogic.init(window);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     protected void gameLoop() {

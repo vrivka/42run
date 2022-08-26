@@ -1,6 +1,5 @@
 package edu.school21.engine.render;
 
-import edu.school21.engine.shaders.fragment.struct.Material;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
@@ -19,16 +18,19 @@ public class Mesh {
     private final int texturesCordsBufferObjectId;
     private final int normalsBufferObjectId;
     private final int vertexCount;
-    private Vector3f color = null;
-    private Material material;
+    private Vector3f color = new Vector3f(1f);
+    public Vector3f min;
+    public Vector3f max;
 
-    public Mesh(float[] vertices, int[] indices, float[] textureCords, float[] normals, Material material) {
+    public Mesh(float[] vertices, int[] indices, float[] textureCords, float[] normals) {
         FloatBuffer verticesBuffer = null;
         IntBuffer indicesBuffer = null;
         FloatBuffer texturesCordsBuffer = null;
         FloatBuffer normalsBuffer = null;
         vertexCount = indices.length;
-        this.material = material;
+        min = new Vector3f(0f);
+        max = new Vector3f(0f);
+        setMinMax(vertices);
 
         try {
             vertexArrayObjectId = glGenVertexArrays();
@@ -83,28 +85,35 @@ public class Mesh {
         }
     }
 
+    public Vector3f getMin() {
+        return min;
+    }
+
+    public Vector3f getMax() {
+        return max;
+    }
+
     public Vector3f getColor() {
         return color;
-    }
-
-    public Material getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(Material material) {
-        this.material = material;
     }
 
     public void setColor(Vector3f color) {
         this.color = color;
     }
 
-    public void render() {
-        if (material.isTextured()) {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, material.getTexture().getId());
-        }
+    private void setMinMax(float[] vertices) {
+        for (int i = 0; i < vertices.length; i += 3) {
+            min.x = Math.min(min.x, vertices[i]);
+            min.y = Math.min(min.y, vertices[i + 1]);
+            min.z = Math.min(min.z, vertices[i + 2]);
 
+            max.x = Math.max(max.x, vertices[i]);
+            max.y = Math.max(max.y, vertices[i + 1]);
+            max.z = Math.max(max.z, vertices[i + 2]);
+        }
+    }
+
+    public void render() {
         glBindVertexArray(vertexArrayObjectId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -129,10 +138,6 @@ public class Mesh {
         glDeleteBuffers(indicesBufferObjectId);
         glDeleteBuffers(texturesCordsBufferObjectId);
         glDeleteBuffers(normalsBufferObjectId);
-
-        if (material.isTextured()) {
-            material.getTexture().cleanup();
-        }
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);

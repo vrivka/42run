@@ -1,8 +1,10 @@
 package edu.school21.utils;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,26 +14,40 @@ public class Utils {
     public static String loadResource(String fileName) throws IOException {
         String result;
 
-        try (InputStream resourceStream = resourceAsStream(fileName);
+        try (InputStream resourceStream = new FileInputStream(getPathToResource(fileName));
              Scanner scanner = new Scanner(resourceStream, UTF_8)) {
             result = scanner.useDelimiter("\\A").next();
         }
         return result;
     }
 
-    public static List<String> readAllLines(String fileName) throws IOException {
-        List<String> lines = new ArrayList<>();
-
-        try (InputStream resourceStream = resourceAsStream(fileName);
-             Scanner scanner = new Scanner(resourceStream, UTF_8)) {
-            while (scanner.hasNextLine()){
-                lines.add(scanner.nextLine());
-            }
+    public static String getPathToResource(String fileName) throws FileNotFoundException {
+        String slash = "";
+        if (!fileName.startsWith("/")) {
+            slash = "/";
         }
-        return lines;
+        URL result = Utils.class.getResource(slash + fileName);
+        if (result == null) {
+            throw new FileNotFoundException("File: " + fileName + " not found");
+        }
+        return result.getPath();
     }
 
-    public static InputStream resourceAsStream(String fileName) {
-        return Utils.class.getResourceAsStream(fileName);
+    public static float[] listFloatToArray(List<Float> list) {
+        float[] result = new float[list.size()];
+
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
+        }
+        return result;
+    }
+
+    public static int[] listIntToArray(List<Integer> list) {
+        int[] result = new int[list.size()];
+
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
+        }
+        return result;
     }
 }

@@ -1,6 +1,7 @@
 package edu.school21.engine.window;
 
 import edu.school21.engine.window.exceptions.WindowInitFailException;
+import edu.school21.game.RunnerGame;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -90,6 +91,12 @@ public class Window implements Closeable {
             if (isKeyPressed(GLFW_KEY_ESCAPE)) {
                 glfwSetWindowShouldClose(window, true);
             }
+            if (isKeyPressed(GLFW_KEY_P)) {
+                RunnerGame.inPause = !RunnerGame.inPause;
+            }
+            if (isKeyPressed(GLFW_KEY_C)) {
+                RunnerGame.cameraDefault = true;
+            }
         });
 
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -101,8 +108,11 @@ public class Window implements Closeable {
 
         glfwShowWindow(window);
         GL.createCapabilities();
-        setClearColor(0.5f, 0.5f, 0.5f, 0f);
+        setClearColor(0f, 0f, 0f, 0f);
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     public void update() {

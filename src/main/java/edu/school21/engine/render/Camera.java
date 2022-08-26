@@ -11,6 +11,11 @@ public class Camera {
         this.rotation = new Vector3f(0, 0, 0);
     }
 
+    public Camera(Vector3f position, Vector3f rotation) {
+        this.position = position;
+        this.rotation = rotation;
+    }
+
     public Vector3f getPosition() {
         return position;
     }
