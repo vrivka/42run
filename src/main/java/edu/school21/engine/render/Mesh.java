@@ -127,7 +127,7 @@ public class Mesh {
         glBindVertexArray(0);
     }
 
-    public void cleanUp() {
+    public void cleanup() {
         glDisableVertexAttribArray(0);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);

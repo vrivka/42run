@@ -10,11 +10,13 @@ public class GameEngine implements Runnable {
     private final Window window;
     private final GameLogic gameLogic;
     private final MouseInput mouseInput;
+    private float aspect;
 
     public GameEngine(String windowTitle, int width, int height, GameLogic gameLogic) {
         window = new Window(windowTitle, width, height);
         this.gameLogic = gameLogic;
         this.mouseInput = new MouseInput();
+        this.aspect = (float)width / (float)height;
     }
 
     @Override
@@ -58,11 +60,12 @@ public class GameEngine implements Runnable {
     }
 
     protected void update() {
-        gameLogic.update(mouseInput);
+        aspect = (float)window.getWidth() / (float)window.getHeight();
+        gameLogic.update(window, aspect, mouseInput);
     }
 
     protected void render() {
-        gameLogic.render(window);
+        gameLogic.render(aspect);
         window.update();
     }
 }

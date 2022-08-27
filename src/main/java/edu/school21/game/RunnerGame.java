@@ -5,12 +5,14 @@ import edu.school21.engine.render.Renderer;
 import edu.school21.engine.window.MouseInput;
 import edu.school21.engine.window.Window;
 import edu.school21.game.hud.HUDHandler;
-import edu.school21.game.hud.HudElement;
+import edu.school21.game.hud.MenuType;
 import edu.school21.utils.OBJLoader;
+import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -21,11 +23,12 @@ public class RunnerGame implements GameLogic {
     private final Renderer renderer;
     private final PipelineHandler pipelineHandler;
     private final HUDHandler hudHandler;
+    public static MenuType menu;
     private Player player;
     private Floor floor;
     private final Vector3f cameraInc;
     private final Camera camera;
-    public static boolean inPause = false;
+    public static boolean inPause = true;
     public static boolean cameraDefault = false;
 
     public RunnerGame() {
@@ -34,6 +37,7 @@ public class RunnerGame implements GameLogic {
         this.cameraInc = new Vector3f();
         this.camera = new Camera(new Vector3f(0, 2.9f, 0), new Vector3f(30.5f, 0, 0));
         this.hudHandler = new HUDHandler(camera);
+        menu = MenuType.MAIN;
     }
 
     @Override
@@ -91,8 +95,43 @@ public class RunnerGame implements GameLogic {
         }
     }
 
+    float i = 0;
+
     @Override
-    public void update(MouseInput mouseInput) {
+    public void update(Window window, float aspect, MouseInput mouseInput) {
+        Vector2d mousePos = mouseInput.getCurrentPos();
+        Predicate<Void> upButton = (v) -> mouseInput.isLeftButtonPressed() && ((mousePos.x >= 620 && mousePos.x <= 980) && (mousePos.y >= 330 && mousePos.y <= 480));
+        Predicate<Void> downButton = (v) -> mouseInput.isLeftButtonPressed() && ((mousePos.x >= 620 && mousePos.x <= 980) && (mousePos.y >= 510 && mousePos.y <= 650));
+
+        if (menu.equals(MenuType.MAIN) || menu.equals(MenuType.DEAD)) {
+            inPause = true;
+            glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+            if (upButton.test(null)) {
+                System.out.println("new game");
+                i = 0;
+                inPause = false;
+                menu = MenuType.IN_GAME;
+                glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                pipelineHandler.clear();
+            } else if (downButton.test(null)) {
+                System.out.println("exit");
+                glfwSetWindowShouldClose(window.getWindow(), true);
+            }
+        } else if (menu.equals(MenuType.PAUSE) && inPause) {
+            glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+            if (upButton.test(null)) {
+                System.out.println("continue");
+                inPause = false;
+                glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                menu = MenuType.IN_GAME;
+            } else if (downButton.test(null)) {
+                System.out.println("exit");
+                glfwSetWindowShouldClose(window.getWindow(), true);
+            }
+        }
+
         camera.movePosition(cameraInc.x * CAMERA_POS_STEP,
                 cameraInc.y * CAMERA_POS_STEP,
                 cameraInc.z * CAMERA_POS_STEP);
@@ -107,9 +146,11 @@ public class RunnerGame implements GameLogic {
         } else {
             SCROLL_SPEED = 0.1f;
         }
+        i += SCROLL_SPEED;
 
         if (pipelineHandler.getForwardObstacle().intersect(player)) {
-            System.out.println("Ups...");
+            menu = MenuType.DEAD;
+            glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         }
 
         if (cameraDefault) {
@@ -118,24 +159,33 @@ public class RunnerGame implements GameLogic {
             cameraDefault = false;
         }
 
+        hudHandler.clear();
+        hudHandler.showMenu(menu);
+        hudHandler.showCount((int)i, aspect);
         pipelineHandler.update();
         player.update();
     }
 
     @Override
-    public void render(Window window) {
-        Renderer.clear();
+    public void render(float aspect) {
         List<GameObject> gameObjectList = pipelineHandler.collect();
 
         gameObjectList.add(player);
         gameObjectList.add(floor);
         gameObjectList.addAll(hudHandler.collect());
-        renderer.render(window, camera, gameObjectList);
+        renderer.render(aspect, camera, gameObjectList);
     }
 
     @Override
     public void cleanup() {
-        renderer.cleanUp();
+        renderer.cleanup();
         pipelineHandler.cleanup();
+        hudHandler.cleanup();
     }
 }
+
+//620 330
+//980 480
+
+//620 510
+//980 650

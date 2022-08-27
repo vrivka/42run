@@ -33,6 +33,11 @@ public class ObstacleGenerator {
         generate();
     }
 
+    public void clear() {
+        pipeline.clear();
+        generate();
+    }
+
     public void remove() {
         if (pipeline.getFirst().getPosition().z > 0) {
             pipeline.pop();
@@ -73,7 +78,7 @@ public class ObstacleGenerator {
 
     public void cleanup() {
         for (Mesh obstacle : obstacles) {
-            obstacle.cleanUp();
+            obstacle.cleanup();
         }
     }
 }

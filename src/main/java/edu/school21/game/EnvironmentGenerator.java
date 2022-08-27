@@ -1,7 +1,6 @@
 package edu.school21.game;
 
 import edu.school21.engine.render.Mesh;
-import edu.school21.engine.render.Texture;
 import edu.school21.utils.OBJLoader;
 import org.joml.Vector3f;
 
@@ -52,6 +51,6 @@ public class EnvironmentGenerator {
     }
 
     public void cleanup() {
-        mesh.cleanUp();
+        mesh.cleanup();
     }
 }

@@ -2,6 +2,7 @@ package edu.school21.engine.window;
 
 import edu.school21.engine.window.exceptions.WindowInitFailException;
 import edu.school21.game.RunnerGame;
+import edu.school21.game.hud.MenuType;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -57,7 +58,7 @@ public class Window implements Closeable {
 
     public boolean isResized() {
         return resized;
-    }
+    } //todo remove
 
     public void init() {
         GLFWErrorCallback.createPrint(System.err).set();
@@ -71,7 +72,7 @@ public class Window implements Closeable {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); //todo resizeable false?
 
         window = glfwCreateWindow(this.width, this.height, windowTitle, NULL, NULL);
 
@@ -89,17 +90,20 @@ public class Window implements Closeable {
 
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if (isKeyPressed(GLFW_KEY_ESCAPE)) {
-                glfwSetWindowShouldClose(window, true);
+                if (RunnerGame.menu.equals(MenuType.IN_GAME)) {
+                    RunnerGame.menu = MenuType.PAUSE;
+                    RunnerGame.inPause = true;
+                } else if (RunnerGame.menu.equals(MenuType.PAUSE)) {
+                    RunnerGame.menu = MenuType.IN_GAME;
+                    RunnerGame.inPause = false;
+                }
             }
-            if (isKeyPressed(GLFW_KEY_P)) {
-                RunnerGame.inPause = !RunnerGame.inPause;
-            }
-            if (isKeyPressed(GLFW_KEY_C)) {
+            if (isKeyPressed(GLFW_KEY_C)) {//todo remove
                 RunnerGame.cameraDefault = true;
             }
         });
 
-        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor()); //todo check vidmode
         glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
 
         glfwMakeContextCurrent(window);
@@ -112,7 +116,6 @@ public class Window implements Closeable {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     public void update() {

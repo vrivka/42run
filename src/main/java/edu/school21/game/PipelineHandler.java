@@ -24,6 +24,10 @@ public class PipelineHandler {
         obstacleGenerator.update();
     }
 
+    public void clear() {
+        obstacleGenerator.clear();
+    }
+
     public void init() throws Exception {
         environmentGenerator.init();
         obstacleGenerator.init("sign.obj", "chair.obj", "board.obj");

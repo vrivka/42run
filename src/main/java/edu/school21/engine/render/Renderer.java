@@ -38,12 +38,12 @@ public class Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Window window, Camera camera, List<GameObject> gameObjects) {
+    public void render(float aspect, Camera camera, List<GameObject> gameObjects) {
         clear();
 
         shaderProgram.bind();
 
-        Matrix4f projection = transformation.getPerspective(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+        Matrix4f projection = transformation.getPerspective(FOV, aspect, Z_NEAR, Z_FAR);
         Matrix4f viewMatrix = transformation.getViewMatrix(camera);
 
         shaderProgram.setUniform("projection", projection);
@@ -60,7 +60,7 @@ public class Renderer {
         shaderProgram.unbind();
     }
 
-    public void cleanUp() {
+    public void cleanup() {
         if (shaderProgram != null) {
             shaderProgram.cleanup();
         }

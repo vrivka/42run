@@ -104,6 +104,6 @@ public class GameObject {
         if (texture != null) {
             texture.cleanup();
         }
-        mesh.cleanUp();
+        mesh.cleanup();
     }
 }

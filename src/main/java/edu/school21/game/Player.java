@@ -1,7 +1,6 @@
 package edu.school21.game;
 
 import edu.school21.engine.render.Mesh;
-import org.joml.Matrix3f;
 import org.joml.Vector3f;
 
 public class Player extends GameObject {

@@ -17,8 +17,7 @@ public class Transformation {
         this.view = new Matrix4f();
     }
 
-    public Matrix4f getPerspective(float fov, float width, float height, float zNear, float zFar) {
-        float aspect = width / height;
+    public Matrix4f getPerspective(float fov, float aspect, float zNear, float zFar) {
         perspective.identity().perspective(fov, aspect, zNear, zFar);
         return perspective;
     }
