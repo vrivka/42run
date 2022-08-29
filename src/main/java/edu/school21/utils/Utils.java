@@ -14,7 +14,7 @@ public class Utils {
     public static String loadResource(String fileName) throws IOException {
         String result;
 
-        try (InputStream resourceStream = new FileInputStream(getPathToResource(fileName));
+        try (InputStream resourceStream = Utils.class.getResourceAsStream(fileName);
              Scanner scanner = new Scanner(resourceStream, UTF_8)) {
             result = scanner.useDelimiter("\\A").next();
         }

@@ -18,9 +18,9 @@ public class Mesh {
     private final int texturesCordsBufferObjectId;
     private final int normalsBufferObjectId;
     private final int vertexCount;
-    private Vector3f color = new Vector3f(1f);
-    public Vector3f min;
-    public Vector3f max;
+    private final Vector3f color = new Vector3f(1f);
+    private final Vector3f min;
+    private final Vector3f max;
 
     public Mesh(float[] vertices, int[] indices, float[] textureCords, float[] normals) {
         FloatBuffer verticesBuffer = null;
@@ -28,8 +28,8 @@ public class Mesh {
         FloatBuffer texturesCordsBuffer = null;
         FloatBuffer normalsBuffer = null;
         vertexCount = indices.length;
-        min = new Vector3f(0f);
-        max = new Vector3f(0f);
+        min = new Vector3f();
+        max = new Vector3f();
         setMinMax(vertices);
 
         try {
@@ -97,8 +97,8 @@ public class Mesh {
         return color;
     }
 
-    public void setColor(Vector3f color) {
-        this.color = color;
+    public void setColor(float color) {
+        this.color.set(color);
     }
 
     private void setMinMax(float[] vertices) {
@@ -128,7 +128,6 @@ public class Mesh {
     }
 
     public void cleanup() {
-        glDisableVertexAttribArray(0);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);

@@ -1,8 +1,7 @@
 package edu.school21.engine.render;
 
 import edu.school21.engine.shaders.ShaderProgram;
-import edu.school21.engine.window.Window;
-import edu.school21.game.GameObject;
+import edu.school21.game.models.GameObject;
 import edu.school21.utils.Utils;
 import org.joml.Matrix4f;
 
@@ -15,17 +14,15 @@ public class Renderer {
     private static final float FOV = (float) Math.toRadians(60.0f);
     private static final float Z_NEAR = 0.01f;
     private static final float Z_FAR = 1000.f;
-    private ShaderProgram shaderProgram;
-    private final Transformation transformation;
-
-    public Renderer() {
-        this.transformation = new Transformation();
-    }
+    private static final String PATH_TO_VERTEX_SHADER_FILE = "/shaders/vertex.glsl";
+    private static final String PATH_TO_FRAGMENT_SHADER_FILE = "/shaders/fragment.glsl";
+    private ShaderProgram shaderProgram = null;
+    private final Transformation transformation = new Transformation();
 
     public void init() throws IOException {
         shaderProgram = new ShaderProgram();
-        shaderProgram.createVertexShader(Utils.loadResource("/vertex.glsl"));
-        shaderProgram.createFragmentShader(Utils.loadResource("/fragment.glsl"));
+        shaderProgram.createVertexShader(Utils.loadResource(PATH_TO_VERTEX_SHADER_FILE));
+        shaderProgram.createFragmentShader(Utils.loadResource(PATH_TO_FRAGMENT_SHADER_FILE));
         shaderProgram.link();
         shaderProgram.createUniform("projection");
         shaderProgram.createUniform("model_view");
@@ -50,11 +47,11 @@ public class Renderer {
         shaderProgram.setUniform("texture_sampler", 0);
 
         for (GameObject gameObject : gameObjects) {
-            Matrix4f world = transformation.getModelView(gameObject, viewMatrix);
+            Matrix4f world = transformation.getModelViewMatrix(gameObject, viewMatrix);
 
             shaderProgram.setUniform("model_view", world);
             shaderProgram.setUniform("color", gameObject.getMesh().getColor());
-            shaderProgram.setUniform("useColor", gameObject.isTextured() ? 0 : 1);
+            shaderProgram.setUniform("useColor", gameObject.isTextured());
             gameObject.render();
         }
         shaderProgram.unbind();

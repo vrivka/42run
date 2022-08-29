@@ -2,11 +2,16 @@ package edu.school21.game;
 
 import edu.school21.engine.render.Camera;
 import edu.school21.engine.render.Renderer;
-import edu.school21.engine.window.MouseInput;
+import edu.school21.engine.window.MouseHandler;
 import edu.school21.engine.window.Window;
 import edu.school21.game.hud.HUDHandler;
 import edu.school21.game.hud.MenuType;
-import edu.school21.utils.OBJLoader;
+import edu.school21.game.models.GameObject;
+import edu.school21.game.models.PipelineHandler;
+import edu.school21.game.models.environments.Floor;
+import edu.school21.game.models.players.Player;
+import edu.school21.game.utils.MeshContainer;
+import edu.school21.game.utils.TextureContainer;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -18,6 +23,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class RunnerGame implements GameLogic {
     private static float CAMERA_POS_STEP = 0.05f;
+    private static final Vector3f CAMERA_DEFAULT_POSITION = new Vector3f(0, 2.9f, 0);
+    private static final Vector3f CAMERA_DEFAULT_ROTATION = new Vector3f(30.5f, 0, 0);
     public static float SCROLL_SPEED = 0.1f;
     private static final float MOUSE_SENSITIVITY = 0.2f;
     private final Renderer renderer;
@@ -30,12 +37,13 @@ public class RunnerGame implements GameLogic {
     private final Camera camera;
     public static boolean inPause = true;
     public static boolean cameraDefault = false;
+    float scores = 0;
 
     public RunnerGame() {
         this.renderer = new Renderer();
         this.pipelineHandler = new PipelineHandler();
         this.cameraInc = new Vector3f();
-        this.camera = new Camera(new Vector3f(0, 2.9f, 0), new Vector3f(30.5f, 0, 0));
+        this.camera = new Camera(CAMERA_DEFAULT_POSITION, CAMERA_DEFAULT_ROTATION);
         this.hudHandler = new HUDHandler(camera);
         menu = MenuType.MAIN;
     }
@@ -43,15 +51,13 @@ public class RunnerGame implements GameLogic {
     @Override
     public void init(Window window) throws Exception {
         renderer.init();
-        hudHandler.init();
         pipelineHandler.init();
-        player = new Player(OBJLoader.loadMesh("player_cube.obj"));
+        player = new Player();
         floor = new Floor();
     }
-
     @Override
-    public void input(Window window, MouseInput mouseInput) {
-        cameraInc.set(0, 0, 0);
+    public void input(Window window, MouseHandler mouseHandler) {
+        cameraInc.set(0);
 
         if (window.isKeyPressed(GLFW_KEY_W)) {
             cameraInc.z = -1;
@@ -95,49 +101,41 @@ public class RunnerGame implements GameLogic {
         }
     }
 
-    float i = 0;
-
     @Override
-    public void update(Window window, float aspect, MouseInput mouseInput) {
-        Vector2d mousePos = mouseInput.getCurrentPos();
-        Predicate<Void> upButton = (v) -> mouseInput.isLeftButtonPressed() && ((mousePos.x >= 620 && mousePos.x <= 980) && (mousePos.y >= 330 && mousePos.y <= 480));
-        Predicate<Void> downButton = (v) -> mouseInput.isLeftButtonPressed() && ((mousePos.x >= 620 && mousePos.x <= 980) && (mousePos.y >= 510 && mousePos.y <= 650));
+    public void update(Window window, float aspect, MouseHandler mouseHandler) {
+        Vector2d mousePos = mouseHandler.getCurrentPos();
+        Predicate<Void> upButton = (v) -> mouseHandler.isLeftButtonPressed() && ((mousePos.x >= 620 && mousePos.x <= 980) && (mousePos.y >= 330 && mousePos.y <= 480));
+        Predicate<Void> downButton = (v) -> mouseHandler.isLeftButtonPressed() && ((mousePos.x >= 620 && mousePos.x <= 980) && (mousePos.y >= 510 && mousePos.y <= 650));
 
         if (menu.equals(MenuType.MAIN) || menu.equals(MenuType.DEAD)) {
             inPause = true;
             glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
             if (upButton.test(null)) {
-                System.out.println("new game");
-                i = 0;
+                scores = 0;
                 inPause = false;
                 menu = MenuType.IN_GAME;
                 glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
                 pipelineHandler.clear();
             } else if (downButton.test(null)) {
-                System.out.println("exit");
                 glfwSetWindowShouldClose(window.getWindow(), true);
             }
         } else if (menu.equals(MenuType.PAUSE) && inPause) {
             glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
             if (upButton.test(null)) {
-                System.out.println("continue");
                 inPause = false;
                 glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
                 menu = MenuType.IN_GAME;
             } else if (downButton.test(null)) {
-                System.out.println("exit");
                 glfwSetWindowShouldClose(window.getWindow(), true);
             }
         }
 
-        camera.movePosition(cameraInc.x * CAMERA_POS_STEP,
-                cameraInc.y * CAMERA_POS_STEP,
-                cameraInc.z * CAMERA_POS_STEP);
+        camera.movePosition(cameraInc.x * CAMERA_POS_STEP, cameraInc.y * CAMERA_POS_STEP, cameraInc.z * CAMERA_POS_STEP);
 
-        if (mouseInput.isRightButtonPressed()) {
-            Vector2f rotVec = mouseInput.getDisplVec();
+        if (mouseHandler.isRightButtonPressed()) {
+            Vector2f rotVec = mouseHandler.getDisplVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
 
@@ -146,7 +144,7 @@ public class RunnerGame implements GameLogic {
         } else {
             SCROLL_SPEED = 0.1f;
         }
-        i += SCROLL_SPEED;
+        scores += SCROLL_SPEED;
 
         if (pipelineHandler.getForwardObstacle().intersect(player)) {
             menu = MenuType.DEAD;
@@ -154,14 +152,12 @@ public class RunnerGame implements GameLogic {
         }
 
         if (cameraDefault) {
-            camera.setPosition(0, 2.9f, 0);
-            camera.setRotation(30.5f, 0, 0);
+            camera.setPosition(CAMERA_DEFAULT_POSITION);
+            camera.setRotation(CAMERA_DEFAULT_ROTATION);
             cameraDefault = false;
         }
 
-        hudHandler.clear();
-        hudHandler.showMenu(menu);
-        hudHandler.showCount((int)i, aspect);
+        hudHandler.update(menu, (int) scores, aspect);
         pipelineHandler.update();
         player.update();
     }
@@ -179,8 +175,8 @@ public class RunnerGame implements GameLogic {
     @Override
     public void cleanup() {
         renderer.cleanup();
-        pipelineHandler.cleanup();
-        hudHandler.cleanup();
+        MeshContainer.cleanup();
+        TextureContainer.cleanup();
     }
 }
 

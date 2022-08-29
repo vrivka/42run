@@ -1,5 +1,6 @@
 package edu.school21.utils;
 
+import edu.school21.app.Main;
 import edu.school21.engine.render.Mesh;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIFace;
@@ -17,7 +18,7 @@ public class OBJLoader {
     public static final int ASSIMP_FLAGS = aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals;
 
     public static Mesh loadMesh(String fileName) throws Exception {
-        AIScene aiScene = aiImportFile(Utils.getPathToResource(fileName), ASSIMP_FLAGS);
+        AIScene aiScene = aiImportFile(Main.FILE_PREFIX + fileName, ASSIMP_FLAGS);
 
         if (aiScene == null) {
             throw new Exception(aiGetErrorString());
