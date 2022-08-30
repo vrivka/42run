@@ -74,7 +74,7 @@ public class Window implements Closeable {
         window = glfwCreateWindow(width, height, windowTitle, NULL, NULL);
 
         if (window == NULL) {
-            throw new WindowInitFailException("Failed to create the GLFW window");
+            throw new WindowInitFailException("Failed to create the GLFW window"); // todo window creation failed
         }
 
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
