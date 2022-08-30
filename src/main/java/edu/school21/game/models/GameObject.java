@@ -25,6 +25,7 @@ public class GameObject {
     public GameObject(Mesh mesh, Texture2D texture) {
         this(mesh);
         this.texture = texture;
+        this.collisionModel = new CollisionModel(this.mesh, this.position);
     }
 
     public int isTextured() {

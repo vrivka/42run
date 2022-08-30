@@ -4,11 +4,15 @@ import edu.school21.engine.render.Mesh;
 import org.joml.Vector3f;
 
 public class CollisionModel {
-    private final Mesh mesh;
+    private Mesh mesh;
     private final Vector3f position;
 
     public CollisionModel(Mesh mesh, Vector3f position) {
         this.position = position;
+        this.mesh = mesh;
+    }
+
+    public void setMesh(Mesh mesh) {
         this.mesh = mesh;
     }
 

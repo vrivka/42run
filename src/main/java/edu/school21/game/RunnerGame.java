@@ -37,7 +37,7 @@ public class RunnerGame implements GameLogic {
     private final Camera camera;
     public static boolean inPause = true;
     public static boolean cameraDefault = false;
-    float scores = 0;
+    private float scores = 0;
 
     public RunnerGame() {
         this.renderer = new Renderer();
@@ -159,7 +159,7 @@ public class RunnerGame implements GameLogic {
 
         hudHandler.update(menu, (int) scores, aspect);
         pipelineHandler.update();
-        player.update();
+        player.update(scores);
     }
 
     @Override
