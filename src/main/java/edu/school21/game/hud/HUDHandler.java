@@ -1,7 +1,10 @@
 package edu.school21.game.hud;
 
 import edu.school21.engine.render.Camera;
+import edu.school21.engine.window.MouseHandler;
+import edu.school21.engine.window.Window;
 import edu.school21.game.models.GameObject;
+import edu.school21.game.models.PipelineHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +26,14 @@ public class HUDHandler {
         return result;
     }
 
-    public void update(MenuType menu, int count, float aspect) {
+    public void update(int count, float aspect) {
         clear();
         hudCounter.update(count, aspect);
-        hudMenus.update(menu);
+        hudMenus.update();
+    }
+
+    public void handle(Window window, MouseHandler mouseHandler, PipelineHandler pipelineHandler) {
+        hudMenus.handle(window, mouseHandler, pipelineHandler);
     }
 
     private void clear() {

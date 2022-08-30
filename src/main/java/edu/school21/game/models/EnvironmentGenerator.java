@@ -41,7 +41,7 @@ public class EnvironmentGenerator {
         setEnvironment();
 
         for (GameObject gameObject : pipeline) {
-            gameObject.moveZ(RunnerGame.GAME_SPEED);
+            gameObject.moveZ(RunnerGame.gameSpeed);
         }
     }
 

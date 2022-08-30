@@ -40,9 +40,9 @@ public class ObstacleGenerator {
     public void update() {
         remove();
         for (GameObject gameObject : pipeline) {
-            gameObject.moveZ(RunnerGame.GAME_SPEED);
+            gameObject.moveZ(RunnerGame.gameSpeed);
         }
-        movedDistance += RunnerGame.GAME_SPEED;
+        movedDistance += RunnerGame.gameSpeed;
         if (movedDistance >= range) {
             generate();
             movedDistance = 0f;

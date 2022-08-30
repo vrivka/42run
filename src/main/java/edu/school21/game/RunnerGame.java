@@ -12,12 +12,10 @@ import edu.school21.game.models.environments.Floor;
 import edu.school21.game.models.players.Player;
 import edu.school21.game.utils.MeshContainer;
 import edu.school21.game.utils.TextureContainer;
-import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -25,20 +23,22 @@ public class RunnerGame implements GameLogic {
     private static float CAMERA_POS_STEP = 0.05f;
     private static final Vector3f CAMERA_DEFAULT_POSITION = new Vector3f(0, 2.9f, 0);
     private static final Vector3f CAMERA_DEFAULT_ROTATION = new Vector3f(30.5f, 0, 0);
-    public static float GAME_SPEED = 0.01f;
-    private static float SAVED_SPEED = 0.01f;
     private static final float MOUSE_SENSITIVITY = 0.2f;
+    private static final float ACCELERATION = 0.005f;
+    private static final int ACCELERATION_INTERVAL = 150;
+    public static MenuType menu;
+    public static boolean inPause = true;
+    public static boolean cameraDefault = false;
+    public static float gameSpeed = 0.01f;
+    public static float savedSpeed = 0.01f;
+    public static float scores = 0;
     private final Renderer renderer;
     private final PipelineHandler pipelineHandler;
     private final HUDHandler hudHandler;
-    public static MenuType menu;
     private Player player;
     private Floor floor;
     private final Vector3f cameraInc;
     private final Camera camera;
-    public static boolean inPause = true;
-    public static boolean cameraDefault = false;
-    private float scores = 0;
 
     public RunnerGame() {
         this.renderer = new Renderer();
@@ -104,36 +104,7 @@ public class RunnerGame implements GameLogic {
 
     @Override
     public void update(Window window, float aspect, MouseHandler mouseHandler) {
-        Vector2d mousePos = mouseHandler.getCurrentPos();
-        Predicate<Void> upButton = (v) -> mouseHandler.isLeftButtonPressed() && ((mousePos.x >= 620 && mousePos.x <= 980) && (mousePos.y >= 330 && mousePos.y <= 480));
-        Predicate<Void> downButton = (v) -> mouseHandler.isLeftButtonPressed() && ((mousePos.x >= 620 && mousePos.x <= 980) && (mousePos.y >= 510 && mousePos.y <= 650));
-
-        if (menu.equals(MenuType.MAIN) || menu.equals(MenuType.DEAD)) {
-            inPause = true;
-            glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-            if (upButton.test(null)) {
-                scores = 0;
-                inPause = false;
-                menu = MenuType.IN_GAME;
-                glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-                SAVED_SPEED = 0.01f;
-                pipelineHandler.clear();
-            } else if (downButton.test(null)) {
-                glfwSetWindowShouldClose(window.getWindow(), true);
-            }
-        } else if (menu.equals(MenuType.PAUSE) && inPause) {
-            glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-            if (upButton.test(null)) {
-                inPause = false;
-                glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-                menu = MenuType.IN_GAME;
-            } else if (downButton.test(null)) {
-                glfwSetWindowShouldClose(window.getWindow(), true);
-            }
-        }
-
+        hudHandler.handle(window, mouseHandler, pipelineHandler);
         camera.movePosition(cameraInc.x * CAMERA_POS_STEP, cameraInc.y * CAMERA_POS_STEP, cameraInc.z * CAMERA_POS_STEP);
 
         if (mouseHandler.isRightButtonPressed()) {
@@ -142,14 +113,14 @@ public class RunnerGame implements GameLogic {
         }
 
         if (inPause) {
-            GAME_SPEED = 0;
+            gameSpeed = 0;
         } else {
-            GAME_SPEED = SAVED_SPEED;
+            gameSpeed = savedSpeed;
         }
-        scores += GAME_SPEED;
+        scores += gameSpeed;
 
-        if (scores != 0 && (int) scores % 150 == 0) {
-            SAVED_SPEED += 0.005f;
+        if (scores != 0 && (int) scores % ACCELERATION_INTERVAL == 0) {
+            savedSpeed += ACCELERATION;
         }
 
         if (pipelineHandler.getForwardObstacle().intersect(player)) {
@@ -163,7 +134,7 @@ public class RunnerGame implements GameLogic {
             cameraDefault = false;
         }
 
-        hudHandler.update(menu, (int) scores, aspect);
+        hudHandler.update((int) scores, aspect);
         pipelineHandler.update();
         player.update(scores);
     }
@@ -185,9 +156,3 @@ public class RunnerGame implements GameLogic {
         TextureContainer.cleanup();
     }
 }
-
-//620 330
-//980 480
-
-//620 510
-//980 650

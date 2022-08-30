@@ -31,8 +31,6 @@ public class CollisionModel {
         float bMaxY = model.mesh.getMax().y + model.position.y;
         float bMaxZ = model.mesh.getMax().z + model.position.z;
 
-        System.out.println(bMaxY);
-
         return (aMinX <= bMaxX && aMaxX >= bMinX) &&
                 (aMinY <= bMaxY && aMaxY >= bMinY) &&
                 (aMinZ <= bMaxZ && aMaxZ >= bMinZ);
