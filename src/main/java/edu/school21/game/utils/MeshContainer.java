@@ -28,9 +28,16 @@ public class MeshContainer {
             Mesh[] anim = new Mesh[18];
 
             for (int i = 1; i < 19; i++) {
-                anim[i - 1] = OBJLoader.loadMesh(String.format("CubeMan_%06d.obj", i));
+                anim[i - 1] = OBJLoader.loadMesh(String.format("models/player/run/CubeMan_%06d.obj", i));
             }
             animations.put(AnimationType.RUN, anim);
+            anim = new Mesh[20];
+
+            for (int i = 1; i < 21; i++) {
+                anim[i - 1] = OBJLoader.loadMesh(String.format("models/player/roll/CubeMan_%06d.obj", i));
+                anim[i - 1].getMax().y = 0.5f;
+            }
+            animations.put(AnimationType.ROLL, anim);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(Main.ERROR_EXIT_CODE);

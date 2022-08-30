@@ -25,6 +25,7 @@ public class PipelineHandler {
     }
 
     public void clear() {
+        environmentGenerator.clear();
         obstacleGenerator.clear();
     }
 

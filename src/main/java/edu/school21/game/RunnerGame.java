@@ -25,7 +25,8 @@ public class RunnerGame implements GameLogic {
     private static float CAMERA_POS_STEP = 0.05f;
     private static final Vector3f CAMERA_DEFAULT_POSITION = new Vector3f(0, 2.9f, 0);
     private static final Vector3f CAMERA_DEFAULT_ROTATION = new Vector3f(30.5f, 0, 0);
-    public static float SCROLL_SPEED = 0.1f;
+    public static float GAME_SPEED = 0.01f;
+    private static float SAVED_SPEED = 0.01f;
     private static final float MOUSE_SENSITIVITY = 0.2f;
     private final Renderer renderer;
     private final PipelineHandler pipelineHandler;
@@ -90,10 +91,10 @@ public class RunnerGame implements GameLogic {
             player.moveLeft();
         }
         if (window.isKeyPressed(GLFW_KEY_DOWN)) {
-            player.setInSlide(true);
+            player.setInRoll(true);
         }
         if (window.isKeyReleased(GLFW_KEY_DOWN)) {
-            player.setInSlide(false);
+            player.setInRoll(false);
         }
 
         if (window.isKeyPressed(GLFW_KEY_SPACE)) {
@@ -116,6 +117,7 @@ public class RunnerGame implements GameLogic {
                 inPause = false;
                 menu = MenuType.IN_GAME;
                 glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                SAVED_SPEED = 0.01f;
                 pipelineHandler.clear();
             } else if (downButton.test(null)) {
                 glfwSetWindowShouldClose(window.getWindow(), true);
@@ -140,11 +142,15 @@ public class RunnerGame implements GameLogic {
         }
 
         if (inPause) {
-            SCROLL_SPEED = 0;
+            GAME_SPEED = 0;
         } else {
-            SCROLL_SPEED = 0.1f;
+            GAME_SPEED = SAVED_SPEED;
         }
-        scores += SCROLL_SPEED;
+        scores += GAME_SPEED;
+
+        if (scores != 0 && (int) scores % 150 == 0) {
+            SAVED_SPEED += 0.005f;
+        }
 
         if (pipelineHandler.getForwardObstacle().intersect(player)) {
             menu = MenuType.DEAD;

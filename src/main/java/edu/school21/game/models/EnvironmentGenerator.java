@@ -24,7 +24,7 @@ public class EnvironmentGenerator {
         }
         float firstPosition = pipeline.getFirst().getPosition().z;
 
-        if (firstPosition > OFFSET) {
+        if (firstPosition >= OFFSET) {
             pipeline.pop();
             generate();
         }
@@ -39,9 +39,15 @@ public class EnvironmentGenerator {
 
     public void update() {
         setEnvironment();
+
         for (GameObject gameObject : pipeline) {
-            gameObject.moveZ(RunnerGame.SCROLL_SPEED);
+            gameObject.moveZ(RunnerGame.GAME_SPEED);
         }
+    }
+
+    public void clear() {
+        pipeline.clear();
+        setEnvironment();
     }
 
     public void init() {

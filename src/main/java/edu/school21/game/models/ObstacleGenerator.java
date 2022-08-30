@@ -26,6 +26,8 @@ public class ObstacleGenerator {
 
     public void clear() {
         pipeline.clear();
+        range = 10f;
+        movedDistance = 0;
         generate();
     }
 
@@ -38,9 +40,9 @@ public class ObstacleGenerator {
     public void update() {
         remove();
         for (GameObject gameObject : pipeline) {
-            gameObject.moveZ(RunnerGame.SCROLL_SPEED);
+            gameObject.moveZ(RunnerGame.GAME_SPEED);
         }
-        movedDistance += RunnerGame.SCROLL_SPEED;
+        movedDistance += RunnerGame.GAME_SPEED;
         if (movedDistance >= range) {
             generate();
             movedDistance = 0f;
