@@ -10,6 +10,7 @@ import static edu.school21.game.utils.TextureContainer.getRandomClusterTexture;
 public class Chair extends GameObject {
     public Chair() {
         super(meshes.get(CHAIR), getRandomClusterTexture());
+        type = CHAIR;
     }
 
     public void randomPositionRotation() {

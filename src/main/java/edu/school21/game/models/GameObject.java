@@ -2,12 +2,14 @@ package edu.school21.game.models;
 
 import edu.school21.engine.render.Mesh;
 import edu.school21.engine.render.Texture2D;
+import edu.school21.game.utils.types.MeshType;
 import org.joml.Vector3f;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 public class GameObject {
+    protected MeshType type;
     protected Mesh mesh = null;
     protected Texture2D texture = null;
     protected Vector3f position = new Vector3f();
@@ -26,6 +28,10 @@ public class GameObject {
         this(mesh);
         this.texture = texture;
         this.collisionModel = new CollisionModel(this.mesh, this.position);
+    }
+
+    public boolean isTypeOf(MeshType type) {
+        return this.type.equals(type);
     }
 
     public int isTextured() {

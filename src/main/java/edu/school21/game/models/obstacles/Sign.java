@@ -11,6 +11,7 @@ import static edu.school21.game.utils.types.MeshType.SIGN;
 public class Sign extends GameObject {
     public Sign() {
         super(meshes.get(SIGN), TextureContainer.textures.get(TextureType.SIGN));
+        type = SIGN;
     }
 
     public void randomPositionRotation() {

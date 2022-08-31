@@ -60,7 +60,7 @@ public class MenusHandler {
         } else if (menu.equals(MenuType.PAUSE)) {
             upButton.setTexture(buttonTextures.get(CONTINUE));
             downButton.setTexture(buttonTextures.get(EXIT));
-        } else if (menu.equals(MenuType.DEAD)) {
+        } else if (menu.equals(MenuType.GAME_OVER)) {
             upButton.setTexture(buttonTextures.get(TRY_AGAIN));
             downButton.setTexture(buttonTextures.get(EXIT));
             title.setTexture(titleTextures.get(GAME_OVER));
@@ -79,7 +79,7 @@ public class MenusHandler {
         Predicate<Void> upButton = (v) -> mouseHandler.isLeftButtonPressed() && ((mousePos.x >= 620 && mousePos.x <= 980) && (mousePos.y >= 330 && mousePos.y <= 480));
         Predicate<Void> downButton = (v) -> mouseHandler.isLeftButtonPressed() && ((mousePos.x >= 620 && mousePos.x <= 980) && (mousePos.y >= 510 && mousePos.y <= 650));
 
-        if (menu.equals(MenuType.MAIN) || menu.equals(MenuType.DEAD)) {
+        if (menu.equals(MenuType.MAIN) || menu.equals(MenuType.GAME_OVER)) {
             inPause = true;
             glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 

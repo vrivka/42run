@@ -12,6 +12,7 @@ import edu.school21.game.models.environments.Floor;
 import edu.school21.game.models.players.Player;
 import edu.school21.game.utils.MeshContainer;
 import edu.school21.game.utils.TextureContainer;
+import edu.school21.game.utils.types.MeshType;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -25,7 +26,7 @@ public class RunnerGame implements GameLogic {
     private static final Vector3f CAMERA_DEFAULT_ROTATION = new Vector3f(30.5f, 0, 0);
     private static final float MOUSE_SENSITIVITY = 0.2f;
     private static final float ACCELERATION = 0.005f;
-    private static final int ACCELERATION_INTERVAL = 150;
+    private static final int ACCELERATION_INTERVAL = 200;
     public static MenuType menu;
     public static boolean inPause = true;
     public static boolean cameraDefault = false;
@@ -124,8 +125,14 @@ public class RunnerGame implements GameLogic {
         }
 
         if (pipelineHandler.getForwardObstacle().intersect(player)) {
-            menu = MenuType.DEAD;
-            glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            if (pipelineHandler.getForwardObstacle().isTypeOf(MeshType.SIGN)) {
+                savedSpeed -= ACCELERATION;
+            } else {
+                menu = MenuType.GAME_OVER;
+            }
+            if (savedSpeed < 0) {
+                menu = MenuType.GAME_OVER;
+            }
         }
 
         if (cameraDefault) {
