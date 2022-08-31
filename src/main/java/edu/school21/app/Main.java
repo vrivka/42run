@@ -5,10 +5,9 @@ import edu.school21.game.GameLogic;
 import edu.school21.game.RunnerGame;
 
 public class Main {
-    public static final String WINDOW_TITLE = "42run";
-    public static final String FILE_PREFIX = "src/main/resources/";
     private static final int WINDOW_WIDTH = 1600;
     private static final int WINDOW_HEIGHT = 900;
+    public static final String WINDOW_TITLE = "42run";
     public static final int ERROR_EXIT_CODE = -1;
 
     public static void main(String[] args) {
@@ -22,5 +21,3 @@ public class Main {
         }
     }
 }
-
-//todo make continue button

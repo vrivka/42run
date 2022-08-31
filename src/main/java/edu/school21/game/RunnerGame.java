@@ -21,7 +21,7 @@ import java.util.List;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class RunnerGame implements GameLogic {
-    private static float CAMERA_POS_STEP = 0.05f;
+    private static final float CAMERA_POS_STEP = 0.05f;
     private static final Vector3f CAMERA_DEFAULT_POSITION = new Vector3f(0, 2.9f, 0);
     private static final Vector3f CAMERA_DEFAULT_ROTATION = new Vector3f(30.5f, 0, 0);
     private static final float MOUSE_SENSITIVITY = 0.2f;
@@ -30,7 +30,7 @@ public class RunnerGame implements GameLogic {
     private static final float ADDITIONAL_SCORE = 50f;
     public static MenuType menu;
     public static boolean inPause = true;
-    public static boolean cameraDefault = false;
+    public static boolean cameraOnDefaultPosition = false;
     public static float gameSpeed = 0.1f;
     public static float savedSpeed = 0.1f;
     public static float scores = 0;
@@ -59,44 +59,39 @@ public class RunnerGame implements GameLogic {
         player = new Player();
         floor = new Floor();
     }
+
     @Override
     public void input(Window window, MouseHandler mouseHandler) {
         cameraInc.set(0);
 
-        if (window.isKeyPressed(GLFW_KEY_W)) {
+        if (window.isKeyPressed(GLFW_KEY_UP)) {
             cameraInc.z = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_S)) {
+        } else if (window.isKeyPressed(GLFW_KEY_DOWN)) {
             cameraInc.z = 1;
         }
 
-        if (window.isKeyPressed(GLFW_KEY_A)) {
+        if (window.isKeyPressed(GLFW_KEY_LEFT)) {
             cameraInc.x = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_D)) {
+        } else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
             cameraInc.x = 1;
         }
 
-        if (window.isKeyPressed(GLFW_KEY_E)) {
+        if (window.isKeyPressed(GLFW_KEY_RIGHT_CONTROL)) {
             cameraInc.y = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_Q)) {
+        } else if (window.isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
             cameraInc.y = 1;
         }
 
-        if (window.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
-            CAMERA_POS_STEP = 0.5f;
-        } else if (window.isKeyReleased(GLFW_KEY_LEFT_SHIFT)) {
-            CAMERA_POS_STEP = 0.05f;
-        }
-
-        if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
+        if (window.isKeyPressed(GLFW_KEY_D)) {
             player.moveRight();
         }
-        if (window.isKeyPressed(GLFW_KEY_LEFT)) {
+        if (window.isKeyPressed(GLFW_KEY_A)) {
             player.moveLeft();
         }
-        if (window.isKeyPressed(GLFW_KEY_DOWN)) {
+        if (window.isKeyPressed(GLFW_KEY_S)) {
             player.setInRoll(true);
         }
-        if (window.isKeyReleased(GLFW_KEY_DOWN)) {
+        if (window.isKeyReleased(GLFW_KEY_S)) {
             player.setInRoll(false);
         }
 
@@ -141,10 +136,10 @@ public class RunnerGame implements GameLogic {
             }
         }
 
-        if (cameraDefault) {
+        if (cameraOnDefaultPosition) {
             camera.setPosition(CAMERA_DEFAULT_POSITION);
             camera.setRotation(CAMERA_DEFAULT_ROTATION);
-            cameraDefault = false;
+            cameraOnDefaultPosition = false;
         }
 
         hudHandler.update((int) scores, aspect);

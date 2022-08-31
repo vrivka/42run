@@ -2,6 +2,7 @@ package edu.school21.engine.render;
 
 import edu.school21.app.Main;
 import edu.school21.engine.render.exceptions.LoadTextureFailException;
+import edu.school21.utils.Utils;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
@@ -14,7 +15,7 @@ import static org.lwjgl.stb.STBImage.*;
 public class Texture2D {
     private final int id;
 
-    public Texture2D(String fileName) {
+    public Texture2D(String fileName) throws Exception {
         this.id = loadTexture(fileName);
     }
 
@@ -22,7 +23,7 @@ public class Texture2D {
         glBindTexture(GL_TEXTURE_2D, id);
     }
 
-    private int loadTexture(String fileName) {
+    private int loadTexture(String fileName) throws Exception {
         ByteBuffer buf;
         int width;
         int height;
@@ -32,7 +33,7 @@ public class Texture2D {
             IntBuffer heightBuffer = stack.mallocInt(1);
             IntBuffer channels = stack.mallocInt(1);
 
-            buf = stbi_load(Main.FILE_PREFIX + fileName, widthBuffer, heightBuffer, channels, 4);
+            buf = stbi_load_from_memory(Utils.getBytesFromFile(fileName), widthBuffer, heightBuffer, channels, 4);
 
             if (buf == null) {
                 throw new LoadTextureFailException("Image file [" + fileName + "] not loaded: " + stbi_failure_reason());

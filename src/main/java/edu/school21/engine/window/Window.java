@@ -88,7 +88,7 @@ public class Window implements Closeable {
                 }
             }
             if (isKeyPressed(GLFW_KEY_C)) {//todo remove?
-                RunnerGame.cameraDefault = true;
+                RunnerGame.cameraOnDefaultPosition = true;
             }
         });
 

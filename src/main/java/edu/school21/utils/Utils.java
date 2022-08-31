@@ -1,10 +1,13 @@
 package edu.school21.utils;
 
+import org.lwjgl.BufferUtils;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,16 +24,15 @@ public class Utils {
         return result;
     }
 
-    public static String getPathToResource(String fileName) throws FileNotFoundException {
-        String slash = "";
-        if (!fileName.startsWith("/")) {
-            slash = "/";
-        }
-        URL result = Utils.class.getResource(slash + fileName);
-        if (result == null) {
-            throw new FileNotFoundException("File: " + fileName + " not found");
-        }
-        return result.getPath();
+    public static ByteBuffer getBytesFromFile(String fileName) throws Exception {
+        InputStream inputStream = OBJLoader.class.getResourceAsStream(fileName);
+        byte[] bytes = inputStream.readAllBytes();
+
+        ByteBuffer byteBuffer = BufferUtils.createByteBuffer(bytes.length + 1);
+        byteBuffer.put(bytes);
+        byteBuffer.put((byte) 0);
+        byteBuffer.flip();
+        return byteBuffer;
     }
 
     public static float[] listFloatToArray(List<Float> list) {
