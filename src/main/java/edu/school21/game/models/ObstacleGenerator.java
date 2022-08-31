@@ -3,6 +3,7 @@ package edu.school21.game.models;
 import edu.school21.game.RunnerGame;
 import edu.school21.game.models.obstacles.Board;
 import edu.school21.game.models.obstacles.Chair;
+import edu.school21.game.models.obstacles.Fence;
 import edu.school21.game.models.obstacles.Sign;
 import edu.school21.utils.RandomGenerator;
 
@@ -12,7 +13,7 @@ import java.util.Deque;
 public class ObstacleGenerator {
     private static final float GENERATE_DISTANCE = -80f;
     private final Deque<GameObject> pipeline = new ArrayDeque<>();
-    private static final int OBSTACLES_COUNT = 3;
+    private static final int OBSTACLES_COUNT = 4;
     private float range = 10f;
     private float movedDistance = 0;
 
@@ -54,16 +55,18 @@ public class ObstacleGenerator {
         int id = RandomGenerator.generate(0, OBSTACLES_COUNT);
         GameObject obstacle;
 
-        if (id == 1) {
+        if (id == 0) {
             Chair chair = new Chair();
             chair.randomPositionRotation();
             obstacle = chair;
-        } else if (id == 0) {
+        } else if (id == 1) {
             Sign sign = new Sign();
             sign.randomPositionRotation();
             obstacle = sign;
-        } else {
+        } else if (id == 2) {
             obstacle = new Board();
+        } else {
+            obstacle = new Fence();
         }
 
         obstacle.moveZ(GENERATE_DISTANCE);

@@ -8,6 +8,7 @@ import edu.school21.game.utils.TextureContainer;
 import edu.school21.game.utils.types.AnimationType;
 import edu.school21.game.utils.types.ClusterType;
 import edu.school21.game.utils.types.MeshType;
+import edu.school21.game.utils.types.TextureType;
 import org.joml.Vector3f;
 
 import static edu.school21.game.utils.MeshContainer.animations;
@@ -19,6 +20,7 @@ public class Player extends GameObject {
 
     private final Mesh[] runAnimationFrames;
     private final Mesh[] rollAnimationFrames;
+    private final Mesh[] jumpAnimationFrames;
     private boolean inAir = false;
     private boolean inRoll = false;
     private float altitude = 0f;
@@ -28,8 +30,9 @@ public class Player extends GameObject {
         super();
         runAnimationFrames = animations.get(AnimationType.RUN);
         rollAnimationFrames = animations.get(AnimationType.ROLL);
+        jumpAnimationFrames = animations.get(AnimationType.JUMP);
         this.mesh = runAnimationFrames[0];
-        this.texture = TextureContainer.clusterTextures.get(ClusterType.EVOLUTION);
+        this.texture = TextureContainer.textures.get(TextureType.PLAYER);
         this.collisionModel = new CollisionModel(meshes.get(MeshType.PLAYER), this.position);
         this.mesh.setColor(0.8f);
         position.z -= 3f;
@@ -68,6 +71,9 @@ public class Player extends GameObject {
         }
         if (inAir) {
             int direction = altitude >= 0 ? 1 : -1;
+
+            mesh = jumpAnimationFrames[direction == 1 ? (Math.min((int) (altitude / PLAYER_SPEED) / 2, 9)) : 9];
+            collisionModel.setMesh(mesh);
 
             if (altitude < jumpTargetHeight) {
                 moveY(PLAYER_SPEED * direction);

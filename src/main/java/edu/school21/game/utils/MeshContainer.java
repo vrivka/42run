@@ -24,20 +24,27 @@ public class MeshContainer {
             meshes.put(MeshType.NUMBER, OBJLoader.loadMesh("models/number.obj"));
             meshes.put(MeshType.BUTTON, OBJLoader.loadMesh("models/button.obj"));
             meshes.put(MeshType.TITLE, OBJLoader.loadMesh("models/title.obj"));
+            meshes.put(MeshType.FENCE, OBJLoader.loadMesh("models/fence.obj"));
 
-            Mesh[] anim = new Mesh[18];
+            Mesh[] anim = new Mesh[16];
 
-            for (int i = 1; i < 19; i++) {
-                anim[i - 1] = OBJLoader.loadMesh(String.format("models/player/run/CubeMan_%06d.obj", i));
+            for (int i = 1; i < 17; i++) {
+                anim[i - 1] = OBJLoader.loadMesh(String.format("models/player/run/player_run_%06d.obj", i));
             }
             animations.put(AnimationType.RUN, anim);
-            anim = new Mesh[20];
+            anim = new Mesh[17];
 
-            for (int i = 1; i < 21; i++) {
-                anim[i - 1] = OBJLoader.loadMesh(String.format("models/player/roll/CubeMan_%06d.obj", i));
+            for (int i = 1; i < 18; i++) {
+                anim[i - 1] = OBJLoader.loadMesh(String.format("models/player/roll/player_roll_%06d.obj", i));
                 anim[i - 1].getMax().y = 0.5f;
             }
             animations.put(AnimationType.ROLL, anim);
+            anim = new Mesh[10];
+
+            for (int i = 1; i < 11; i++) {
+                anim[i - 1] = OBJLoader.loadMesh(String.format("models/player/jump/player_jump_%06d.obj", i));
+            }
+            animations.put(AnimationType.JUMP, anim);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(Main.ERROR_EXIT_CODE);

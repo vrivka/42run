@@ -25,7 +25,7 @@ public class TextureContainer {
     static {
         try {
             buttonTextures.put(NEW_GAME, new Texture2D("textures/HUD/NewGameButton.png"));
-            buttonTextures.put(CONTINUE, new Texture2D("textures/HUD/MainMenuButton.png")); //todo continue button
+            buttonTextures.put(CONTINUE, new Texture2D("textures/HUD/continueButton.png"));
             buttonTextures.put(TRY_AGAIN, new Texture2D("textures/HUD/TryAgainButton.png"));
             buttonTextures.put(EXIT, new Texture2D("textures/HUD/ExitButton.png"));
 
@@ -45,6 +45,8 @@ public class TextureContainer {
 
             textures.put(SIGN, new Texture2D("textures/other/signTexture.png"));
             textures.put(BOARD, new Texture2D("textures/other/boardTexture.png"));
+            textures.put(PLAYER, new Texture2D("textures/other/player_skin.png"));
+            textures.put(FENCE, new Texture2D("textures/other/fence.png"));
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(Main.ERROR_EXIT_CODE);
