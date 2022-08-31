@@ -88,7 +88,7 @@ public class MenusHandler {
                 inPause = false;
                 menu = MenuType.IN_GAME;
                 glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-                RunnerGame.savedSpeed = 0.01f;
+                RunnerGame.savedSpeed = 0.1f;
                 pipelineHandler.clear();
             } else if (downButton.test(null)) {
                 glfwSetWindowShouldClose(window.getWindow(), true);

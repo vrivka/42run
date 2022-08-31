@@ -11,6 +11,10 @@ public class PipelineHandler {
         return obstacleGenerator.getPipeline().getFirst();
     }
 
+    public void popCollectable() {
+        obstacleGenerator.getPipeline().pop();
+    }
+
     public List<GameObject> collect() {
         List<GameObject> result = new ArrayList<>();
 

@@ -25,6 +25,7 @@ public class MeshContainer {
             meshes.put(MeshType.BUTTON, OBJLoader.loadMesh("models/button.obj"));
             meshes.put(MeshType.TITLE, OBJLoader.loadMesh("models/title.obj"));
             meshes.put(MeshType.FENCE, OBJLoader.loadMesh("models/fence.obj"));
+            meshes.put(MeshType.COLLECTABLE, OBJLoader.loadMesh("models/collectable.obj"));
 
             Mesh[] anim = new Mesh[16];
 

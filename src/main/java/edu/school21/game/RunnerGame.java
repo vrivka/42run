@@ -25,14 +25,16 @@ public class RunnerGame implements GameLogic {
     private static final Vector3f CAMERA_DEFAULT_POSITION = new Vector3f(0, 2.9f, 0);
     private static final Vector3f CAMERA_DEFAULT_ROTATION = new Vector3f(30.5f, 0, 0);
     private static final float MOUSE_SENSITIVITY = 0.2f;
-    private static final float ACCELERATION = 0.005f;
-    private static final int ACCELERATION_INTERVAL = 200;
+    private static final float ACCELERATION = 0.025f;
+    private static final int ACCELERATION_MULTIPLIER = 2;
+    private static final float ADDITIONAL_SCORE = 50f;
     public static MenuType menu;
     public static boolean inPause = true;
     public static boolean cameraDefault = false;
-    public static float gameSpeed = 0.01f;
-    public static float savedSpeed = 0.01f;
+    public static float gameSpeed = 0.1f;
+    public static float savedSpeed = 0.1f;
     public static float scores = 0;
+    private float targetScore = 200f;
     private final Renderer renderer;
     private final PipelineHandler pipelineHandler;
     private final HUDHandler hudHandler;
@@ -120,13 +122,17 @@ public class RunnerGame implements GameLogic {
         }
         scores += gameSpeed;
 
-        if (scores != 0 && (int) scores % ACCELERATION_INTERVAL == 0) {
+        if (scores > targetScore) {
             savedSpeed += ACCELERATION;
+            targetScore *= ACCELERATION_MULTIPLIER;
         }
 
         if (pipelineHandler.getForwardObstacle().intersect(player)) {
             if (pipelineHandler.getForwardObstacle().isTypeOf(MeshType.SIGN)) {
                 savedSpeed -= ACCELERATION;
+            } else if (pipelineHandler.getForwardObstacle().isTypeOf(MeshType.COLLECTABLE)) {
+                pipelineHandler.popCollectable();
+                scores += ADDITIONAL_SCORE;
             } else {
                 menu = MenuType.GAME_OVER;
             }

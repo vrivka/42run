@@ -68,8 +68,12 @@ public class GameObject {
         this.scale = scale;
     }
 
-    public void setRotation(Vector3f rotation) {
-        this.rotation.set(rotation);
+    public void rotateY(float y) {
+        if (rotation.y >= 0 && rotation.y < 360) {
+            rotation.y += y;
+        } else {
+            rotation.y -= 360 + y;
+        }
     }
 
     public boolean intersect(GameObject gameObject) {
