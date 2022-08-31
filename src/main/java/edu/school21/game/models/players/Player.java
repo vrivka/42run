@@ -6,10 +6,8 @@ import edu.school21.game.models.CollisionModel;
 import edu.school21.game.models.GameObject;
 import edu.school21.game.utils.TextureContainer;
 import edu.school21.game.utils.types.AnimationType;
-import edu.school21.game.utils.types.ClusterType;
 import edu.school21.game.utils.types.MeshType;
 import edu.school21.game.utils.types.TextureType;
-import org.joml.Vector3f;
 
 import static edu.school21.game.utils.MeshContainer.animations;
 import static edu.school21.game.utils.MeshContainer.meshes;
@@ -17,7 +15,6 @@ import static edu.school21.game.utils.MeshContainer.meshes;
 public class Player extends GameObject {
     private static final float PLAYER_SPEED = 0.05f;
     private static final float MAX_JUMP_HEIGHT = 1f;
-
     private final Mesh[] runAnimationFrames;
     private final Mesh[] rollAnimationFrames;
     private final Mesh[] jumpAnimationFrames;

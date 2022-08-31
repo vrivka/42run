@@ -14,6 +14,7 @@ public class Main {
         try {
             GameLogic gameLogic = new RunnerGame();
             GameEngine gameEng = new GameEngine(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, gameLogic);
+
             gameEng.run();
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,11 +2,8 @@ package edu.school21.utils;
 
 import org.lwjgl.BufferUtils;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Scanner;
@@ -25,13 +22,16 @@ public class Utils {
     }
 
     public static ByteBuffer getBytesFromFile(String fileName) throws Exception {
-        InputStream inputStream = OBJLoader.class.getResourceAsStream(fileName);
-        byte[] bytes = inputStream.readAllBytes();
+        ByteBuffer byteBuffer;
 
-        ByteBuffer byteBuffer = BufferUtils.createByteBuffer(bytes.length + 1);
-        byteBuffer.put(bytes);
-        byteBuffer.put((byte) 0);
-        byteBuffer.flip();
+        try (InputStream inputStream = OBJLoader.class.getResourceAsStream(fileName)) {
+            byte[] bytes = inputStream.readAllBytes();
+
+            byteBuffer = BufferUtils.createByteBuffer(bytes.length + 1);
+            byteBuffer.put(bytes);
+            byteBuffer.put((byte) 0);
+            byteBuffer.flip();
+        }
         return byteBuffer;
     }
 

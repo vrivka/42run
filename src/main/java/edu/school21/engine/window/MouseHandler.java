@@ -8,7 +8,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class MouseHandler {
     private final Vector2d previousPos = new Vector2d(-1);
     private final Vector2d currentPos = new Vector2d();
-    private final Vector2f displVec = new Vector2f();
+    private final Vector2f displaceVec = new Vector2f();
     private boolean inWindow = false;
     private boolean leftButtonPressed = false;
     private boolean rightButtonPressed = false;
@@ -22,13 +22,13 @@ public class MouseHandler {
         });
     }
 
-    public Vector2f getDisplVec() {
-        return displVec;
+    public Vector2f getDisplaceVec() {
+        return displaceVec;
     }
 
     public void input() {
-        displVec.x = 0;
-        displVec.y = 0;
+        displaceVec.x = 0;
+        displaceVec.y = 0;
 
         if (previousPos.x > 0 && previousPos.y > 0 && inWindow) {
             double deltaX = currentPos.x - previousPos.x;
@@ -37,11 +37,10 @@ public class MouseHandler {
             boolean rotateY = deltaY != 0;
 
             if (rotateX) {
-                displVec.y = (float) deltaX;
+                displaceVec.y = (float) deltaX;
             }
-
             if (rotateY) {
-                displVec.x = (float) deltaY;
+                displaceVec.x = (float) deltaY;
             }
         }
         previousPos.x = currentPos.x;
@@ -59,4 +58,5 @@ public class MouseHandler {
     public boolean isRightButtonPressed() {
         return rightButtonPressed;
     }
+
 }

@@ -4,6 +4,7 @@ import edu.school21.engine.window.MouseHandler;
 import edu.school21.engine.window.Window;
 import edu.school21.game.RunnerGame;
 import edu.school21.game.models.PipelineHandler;
+
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 
@@ -21,8 +22,8 @@ import static edu.school21.game.utils.TextureContainer.buttonTextures;
 import static edu.school21.game.utils.TextureContainer.titleTextures;
 import static edu.school21.game.utils.types.TitleType.GAME_OVER;
 import static edu.school21.game.utils.types.TitleType.MAIN_MENU;
+
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class MenusHandler {
     private final List<HudElement> elements;
@@ -42,12 +43,15 @@ public class MenusHandler {
             return;
         }
         HudElement upButton = new HudElement(meshes.get(BUTTON), null, cameraRotation);
+        HudElement downButton = new HudElement(meshes.get(BUTTON), null, cameraRotation);
+        HudElement title = new HudElement(meshes.get(TITLE), null, cameraRotation);
+
         upButton.setScale(0.5f);
         upButton.setPosition(0.25f, 2.5f, -1f);
-        HudElement downButton = new HudElement(meshes.get(BUTTON), null, cameraRotation);
+
         downButton.setScale(0.5555f);
         downButton.setPosition(0.275f, 2.2f, -1f);
-        HudElement title = new HudElement(meshes.get(TITLE), null, cameraRotation);
+
         title.setScale(0.7f);
         title.setPosition(0.7f, 2.88f, -1f);
 
@@ -88,7 +92,7 @@ public class MenusHandler {
                 inPause = false;
                 menu = MenuType.IN_GAME;
                 glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-                RunnerGame.savedSpeed = 0.1f;
+                RunnerGame.savedSpeed = RunnerGame.GAME_DEFAULT_SPEED;
                 pipelineHandler.clear();
             } else if (downButton.test(null)) {
                 glfwSetWindowShouldClose(window.getWindow(), true);

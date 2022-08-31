@@ -8,12 +8,15 @@ import edu.school21.utils.RandomGenerator;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import static edu.school21.game.utils.types.MeshType.*;
+
 public class ObstacleGenerator {
-    private static final float GENERATE_DISTANCE = -80f;
-    private final Deque<GameObject> pipeline = new ArrayDeque<>();
+    private static final float GENERATE_DISTANCE = -50f;
     private static final int OBSTACLES_COUNT = 5;
-    private float range = 10f;
+    private static final float DEFAULT_RANGE = 10f;
+    private final Deque<GameObject> pipeline = new ArrayDeque<>();
     private float movedDistance = 0;
+    private float range = DEFAULT_RANGE;
 
     public Deque<GameObject> getPipeline() {
         return pipeline;
@@ -25,8 +28,8 @@ public class ObstacleGenerator {
 
     public void clear() {
         pipeline.clear();
-        range = 10f;
-        movedDistance = 0;
+        range = DEFAULT_RANGE;
+        movedDistance = 0f;
         generate();
     }
 
@@ -49,25 +52,27 @@ public class ObstacleGenerator {
         if (movedDistance >= range) {
             generate();
             movedDistance = 0f;
-            range = RandomGenerator.generate(10f, 15f);
+            range = RandomGenerator.generate(10f, 20f);
         }
     }
 
     public void generate() {
-        int id = RandomGenerator.generate(0, OBSTACLES_COUNT);
+        int type = RandomGenerator.generate(OBSTACLES_COUNT);
         GameObject obstacle;
 
-        if (id == 0) {
+        if (type == CHAIR.ordinal()) {
             Chair chair = new Chair();
+
             chair.randomPositionRotation();
             obstacle = chair;
-        } else if (id == 1) {
+        } else if (type == SIGN.ordinal()) {
             Sign sign = new Sign();
+
             sign.randomPositionRotation();
             obstacle = sign;
-        } else if (id == 2) {
+        } else if (type == BOARD.ordinal()) {
             obstacle = new Board();
-        } else if (id == 3) {
+        } else if (type == FENCE.ordinal()) {
             obstacle = new Fence();
         } else {
             Collectable collectable = new Collectable();

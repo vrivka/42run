@@ -3,21 +3,23 @@ package edu.school21.game.models;
 import edu.school21.engine.render.Mesh;
 import edu.school21.engine.render.Texture2D;
 import edu.school21.game.utils.types.MeshType;
+
 import org.joml.Vector3f;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 public class GameObject {
-    protected MeshType type;
     protected Mesh mesh = null;
-    protected Texture2D texture = null;
-    protected Vector3f position = new Vector3f();
-    protected Vector3f rotation = new Vector3f();
     protected float scale = 1f;
+    protected MeshType type;
+    protected final Vector3f position = new Vector3f();
+    protected Vector3f rotation = new Vector3f();
+    protected Texture2D texture = null;
     protected CollisionModel collisionModel = null;
 
-    public GameObject() {}
+    public GameObject() {
+    }
 
     public GameObject(Mesh mesh) {
         this.mesh = mesh;
@@ -55,9 +57,11 @@ public class GameObject {
     }
 
     public void setPosition(float x, float y, float z) {
-        this.position.x = x;
-        this.position.y = y;
-        this.position.z = z;
+        this.position.set(x, y, z);
+    }
+
+    public void setPosition(Vector3f position) {
+        this.position.set(position);
     }
 
     public void setTexture(Texture2D texture) {
@@ -76,10 +80,6 @@ public class GameObject {
         }
     }
 
-    public boolean intersect(GameObject gameObject) {
-        return collisionModel.calc(gameObject.collisionModel);
-    }
-
     public void moveX(float x) {
         position.x += x;
     }
@@ -92,6 +92,10 @@ public class GameObject {
         position.z += z;
     }
 
+    public boolean intersect(GameObject gameObject) {
+        return collisionModel.calc(gameObject.collisionModel);
+    }
+
     public void render() {
         if (texture != null) {
             glActiveTexture(GL_TEXTURE0);
@@ -100,10 +104,4 @@ public class GameObject {
         mesh.render();
     }
 
-    public void cleanup() {
-        if (texture != null) {
-            texture.cleanup();
-        }
-        mesh.cleanup();
-    }
 }

@@ -1,28 +1,27 @@
 package edu.school21.engine.window;
 
+import edu.school21.engine.window.exceptions.WindowCreationFailException;
 import edu.school21.engine.window.exceptions.WindowInitFailException;
 import edu.school21.game.RunnerGame;
 import edu.school21.game.hud.MenuType;
+
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
-
-import java.io.Closeable;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13C.GL_MULTISAMPLE;
+import static org.lwjgl.opengl.GL.createCapabilities;
+import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public class Window implements Closeable {
+public class Window {
     private static final Vector4f DEFAULT_CLEAR_COLOR = new Vector4f();
     private final String windowTitle;
-    private long window;
     private final float aspect;
     private final int width;
     private final int height;
+    private long window;
 
     public Window(String windowTitle, int width, int height) {
         this.windowTitle = windowTitle;
@@ -41,10 +40,6 @@ public class Window implements Closeable {
 
     public boolean isShouldClose() {
         return glfwWindowShouldClose(window);
-    }
-
-    public void setClearColor(Vector4f color) {
-        glClearColor(color.x, color.y, color.z, color.w);
     }
 
     public float getAspect() {
@@ -69,12 +64,12 @@ public class Window implements Closeable {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); //todo resizeable false?
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
         window = glfwCreateWindow(width, height, windowTitle, NULL, NULL);
 
         if (window == NULL) {
-            throw new WindowInitFailException("Failed to create the GLFW window"); // todo window creation failed
+            throw new WindowCreationFailException("Failed to create the GLFW window");
         }
 
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
@@ -87,13 +82,13 @@ public class Window implements Closeable {
                     RunnerGame.inPause = false;
                 }
             }
-            if (isKeyPressed(GLFW_KEY_C)) {//todo remove?
+            if (isKeyPressed(GLFW_KEY_C)) {
                 RunnerGame.cameraOnDefaultPosition = true;
             }
         });
 
-        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
+        GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowPos(window, (videoMode.width() - width) / 2, (videoMode.height() - height) / 2);
 
         glfwMakeContextCurrent(window);
 
@@ -101,9 +96,9 @@ public class Window implements Closeable {
 
         glfwShowWindow(window);
 
-        GL.createCapabilities();
+        createCapabilities();
 
-        setClearColor(DEFAULT_CLEAR_COLOR);
+        glClearColor(DEFAULT_CLEAR_COLOR.x, DEFAULT_CLEAR_COLOR.y, DEFAULT_CLEAR_COLOR.z, DEFAULT_CLEAR_COLOR.w);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_MULTISAMPLE);
         glEnable(GL_BLEND);
@@ -115,8 +110,7 @@ public class Window implements Closeable {
         glfwPollEvents();
     }
 
-    @Override
-    public void close() {
+    public void cleanup() {
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
         glfwTerminate();

@@ -6,36 +6,35 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL33.*;
 
 public class Mesh {
-    private final int vertexArrayObjectId;
+    private final int ArraysObjectId;
     private final int vertexBufferObjectId;
     private final int indicesBufferObjectId;
     private final int texturesCordsBufferObjectId;
     private final int normalsBufferObjectId;
-    private final int vertexCount;
+    private final int indicesCount;
     private final Vector3f color = new Vector3f(1f);
     private final Vector3f min;
     private final Vector3f max;
 
     public Mesh(float[] vertices, int[] indices, float[] textureCords, float[] normals) {
-        FloatBuffer verticesBuffer = null;
-        IntBuffer indicesBuffer = null;
-        FloatBuffer texturesCordsBuffer = null;
-        FloatBuffer normalsBuffer = null;
-        vertexCount = indices.length;
-        min = new Vector3f();
-        max = new Vector3f();
+        this.indicesCount = indices.length;
+        this.min = new Vector3f();
+        this.max = new Vector3f();
+
         setMinMax(vertices);
 
-        try {
-            vertexArrayObjectId = glGenVertexArrays();
+        IntBuffer indicesBuffer = null;
+        FloatBuffer verticesBuffer = null;
+        FloatBuffer texturesCordsBuffer = null;
+        FloatBuffer normalsBuffer = null;
 
-            glBindVertexArray(vertexArrayObjectId);
+        try {
+            ArraysObjectId = glGenVertexArrays();
+
+            glBindVertexArray(ArraysObjectId);
 
             vertexBufferObjectId = glGenBuffers();
             verticesBuffer = MemoryUtil.memAllocFloat(vertices.length);
@@ -114,12 +113,12 @@ public class Mesh {
     }
 
     public void render() {
-        glBindVertexArray(vertexArrayObjectId);
+        glBindVertexArray(ArraysObjectId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
 
-        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
@@ -142,6 +141,6 @@ public class Mesh {
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
         glBindVertexArray(0);
-        glDeleteVertexArrays(vertexArrayObjectId);
+        glDeleteVertexArrays(ArraysObjectId);
     }
 }

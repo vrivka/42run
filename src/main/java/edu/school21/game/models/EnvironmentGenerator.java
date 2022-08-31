@@ -33,7 +33,7 @@ public class EnvironmentGenerator {
     private void generate() {
         Cluster cluster = new Cluster();
 
-        cluster.setPosition(0, 0, SPAWN_OFFSET * (pipeline.size() + 1) + OFFSET);
+        cluster.moveZ(SPAWN_OFFSET * (pipeline.size() + 1) + OFFSET);
         pipeline.addLast(cluster);
     }
 

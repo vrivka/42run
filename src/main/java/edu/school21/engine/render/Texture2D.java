@@ -1,15 +1,14 @@
 package edu.school21.engine.render;
 
-import edu.school21.app.Main;
 import edu.school21.engine.render.exceptions.LoadTextureFailException;
 import edu.school21.utils.Utils;
+
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.glGenerateMipmap;
+import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.stb.STBImage.*;
 
 public class Texture2D {

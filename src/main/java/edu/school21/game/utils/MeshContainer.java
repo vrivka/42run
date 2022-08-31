@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MeshContainer {
-    public static Map<MeshType, Mesh> meshes = new HashMap<>();
-    public static Map<AnimationType, Mesh[]> animations = new HashMap<>();
+    public static final Map<MeshType, Mesh> meshes = new HashMap<>();
+    public static final Map<AnimationType, Mesh[]> animations = new HashMap<>();
 
     static {
         try {

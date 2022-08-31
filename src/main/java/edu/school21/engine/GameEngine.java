@@ -29,7 +29,7 @@ public class GameEngine implements Runnable {
 
     private void cleanup() {
         gameLogic.cleanup();
-        window.close();
+        window.cleanup();
     }
 
     protected void init() throws Exception {
@@ -52,7 +52,7 @@ public class GameEngine implements Runnable {
     }
 
     protected void update() {
-        gameLogic.update(window, window.getAspect(), mouseHandler);
+        gameLogic.update(window, mouseHandler);
     }
 
     protected void render() {

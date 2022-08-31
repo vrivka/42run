@@ -5,8 +5,8 @@ import java.util.Random;
 public class RandomGenerator {
     private static final Random random = new Random();
 
-    public static int generate(int from, int to) {
-        return random.nextInt(from, to);
+    public static int generate(int to) {
+        return random.nextInt(to);
     }
 
     public static float generate(float from, float to) {

@@ -1,15 +1,12 @@
 package edu.school21.utils;
 
 import edu.school21.engine.render.Mesh;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIVector3D;
 
-import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +14,7 @@ import java.util.List;
 import static org.lwjgl.assimp.Assimp.*;
 
 public class OBJLoader {
-    public static final int ASSIMP_FLAGS = aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals;
+    private static final int ASSIMP_FLAGS = aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals;
 
     public static Mesh loadMesh(String fileName) throws Exception {
         AIScene aiScene = aiImportFileFromMemory(Utils.getBytesFromFile(fileName), ASSIMP_FLAGS, "");
@@ -67,7 +64,7 @@ public class OBJLoader {
         AIVector3D.Buffer buffer = aiMesh.mTextureCoords(0);
 
         if (buffer == null) {
-            return ;
+            return;
         }
 
         while (buffer.remaining() > 0) {
@@ -81,7 +78,7 @@ public class OBJLoader {
         AIVector3D.Buffer aiNormals = aiMesh.mNormals();
 
         if (aiNormals == null) {
-            return ;
+            return;
         }
 
         while (aiNormals.remaining() > 0) {

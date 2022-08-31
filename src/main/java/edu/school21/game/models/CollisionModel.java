@@ -1,11 +1,12 @@
 package edu.school21.game.models;
 
 import edu.school21.engine.render.Mesh;
+
 import org.joml.Vector3f;
 
 public class CollisionModel {
-    private Mesh mesh;
     private final Vector3f position;
+    private Mesh mesh;
 
     public CollisionModel(Mesh mesh, Vector3f position) {
         this.position = position;

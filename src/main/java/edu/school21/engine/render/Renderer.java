@@ -3,12 +3,13 @@ package edu.school21.engine.render;
 import edu.school21.engine.shaders.ShaderProgram;
 import edu.school21.game.models.GameObject;
 import edu.school21.utils.Utils;
+
 import org.joml.Matrix4f;
 
 import java.io.IOException;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL33.*;
 
 public class Renderer {
     private static final float FOV = (float) Math.toRadians(60.0f);
@@ -40,7 +41,7 @@ public class Renderer {
 
         shaderProgram.bind();
 
-        Matrix4f projection = transformation.getPerspective(FOV, aspect, Z_NEAR, Z_FAR);
+        Matrix4f projection = transformation.getPerspectiveProjection(FOV, aspect, Z_NEAR, Z_FAR);
         Matrix4f viewMatrix = transformation.getViewMatrix(camera);
 
         shaderProgram.setUniform("projection", projection);

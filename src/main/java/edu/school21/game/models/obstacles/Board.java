@@ -1,7 +1,6 @@
 package edu.school21.game.models.obstacles;
 
 import edu.school21.game.models.GameObject;
-import edu.school21.game.utils.types.MeshType;
 import edu.school21.game.utils.types.TextureType;
 
 import static edu.school21.game.utils.MeshContainer.meshes;
