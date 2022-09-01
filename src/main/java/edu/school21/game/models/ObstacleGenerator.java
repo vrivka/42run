@@ -11,7 +11,7 @@ import java.util.Deque;
 import static edu.school21.game.utils.types.MeshType.*;
 
 public class ObstacleGenerator {
-    private static final float GENERATE_DISTANCE = -50f;
+    private static final float GENERATE_DISTANCE = -80f;
     private static final int OBSTACLES_COUNT = 5;
     private static final float DEFAULT_RANGE = 10f;
     private final Deque<GameObject> pipeline = new ArrayDeque<>();

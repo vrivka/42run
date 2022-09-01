@@ -130,9 +130,11 @@ public class RunnerGame implements GameLogic {
                 scores += ADDITIONAL_SCORE;
             } else {
                 menu = MenuType.GAME_OVER;
+                targetScore = 200f;
             }
             if (savedSpeed < 0) {
                 menu = MenuType.GAME_OVER;
+                targetScore = 200f;
             }
         }
 
