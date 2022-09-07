@@ -89,6 +89,7 @@ public class MenusHandler {
 
             if (upButton.test(null)) {
                 RunnerGame.scores = 0;
+                RunnerGame.increaseCount = 0;
                 inPause = false;
                 menu = MenuType.IN_GAME;
                 glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);

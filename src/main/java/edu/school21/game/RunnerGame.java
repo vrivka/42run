@@ -29,7 +29,7 @@ public class RunnerGame implements GameLogic {
     private static final float ACCELERATION = 0.025f;
     private static final float MOUSE_SENSITIVITY = 0.2f;
     private static final float CAMERA_POS_STEP = 0.05f;
-    private static final float ACCELERATION_AFTER_TRIP = 0.005f;
+    private static final float ACCELERATION_AFTER_TRIP = 0.0001f;
     public static final float GAME_DEFAULT_SPEED = 0.1f;
     public static boolean cameraOnDefaultPosition = false;
     public static boolean inPause = true;
@@ -37,6 +37,7 @@ public class RunnerGame implements GameLogic {
     public static float savedSpeed = GAME_DEFAULT_SPEED;
     public static float gameSpeed = GAME_DEFAULT_SPEED;
     public static float scores = 0;
+    public static float increaseCount = 0;
     private float targetScore;
     private final PipelineHandler pipelineHandler;
     private final HUDHandler hudHandler;
@@ -120,6 +121,7 @@ public class RunnerGame implements GameLogic {
         if (scores > targetScore) {
             savedSpeed += ACCELERATION;
             targetScore *= ACCELERATION_MULTIPLIER;
+            increaseCount++;
         }
 
         if (pipelineHandler.getForwardObstacle().intersect(player)) {
@@ -138,7 +140,7 @@ public class RunnerGame implements GameLogic {
             }
         }
 
-        if (savedSpeed < GAME_DEFAULT_SPEED) {
+        if (savedSpeed < GAME_DEFAULT_SPEED + ACCELERATION * increaseCount) {
             savedSpeed += ACCELERATION_AFTER_TRIP;
         }
 

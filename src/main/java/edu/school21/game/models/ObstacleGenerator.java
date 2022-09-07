@@ -8,8 +8,6 @@ import edu.school21.utils.RandomGenerator;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import static edu.school21.game.utils.types.MeshType.*;
-
 public class ObstacleGenerator {
     private static final float GENERATE_DISTANCE = -80f;
     private static final int OBSTACLES_COUNT = 5;
@@ -60,19 +58,19 @@ public class ObstacleGenerator {
         int type = RandomGenerator.generate(OBSTACLES_COUNT);
         GameObject obstacle;
 
-        if (type == CHAIR.ordinal()) {
+        if (type == 0) {
             Chair chair = new Chair();
 
             chair.randomPositionRotation();
             obstacle = chair;
-        } else if (type == SIGN.ordinal()) {
+        } else if (type == 1) {
             Sign sign = new Sign();
 
             sign.randomPositionRotation();
             obstacle = sign;
-        } else if (type == BOARD.ordinal()) {
+        } else if (type == 2) {
             obstacle = new Board();
-        } else if (type == FENCE.ordinal()) {
+        } else if (type == 3) {
             obstacle = new Fence();
         } else {
             Collectable collectable = new Collectable();
