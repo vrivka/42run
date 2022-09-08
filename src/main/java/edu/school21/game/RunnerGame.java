@@ -29,7 +29,7 @@ public class RunnerGame implements GameLogic {
     private static final float ACCELERATION = 0.025f;
     private static final float MOUSE_SENSITIVITY = 0.2f;
     private static final float CAMERA_POS_STEP = 0.05f;
-    private static final float ACCELERATION_AFTER_TRIP = 0.0001f;
+    private static final float ACCELERATION_AFTER_TRIP = 0.0002f;
     public static final float GAME_DEFAULT_SPEED = 0.1f;
     public static boolean cameraOnDefaultPosition = false;
     public static boolean inPause = true;
