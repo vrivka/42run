@@ -30,8 +30,8 @@ public class RunnerGame implements GameLogic {
     private static final float MOUSE_SENSITIVITY = 0.2f;
     private static final float CAMERA_POS_STEP = 0.05f;
     private static final float ACCELERATION_AFTER_TRIP = 0.0002f;
+    private static boolean cameraOnDefaultPosition = false;
     public static final float GAME_DEFAULT_SPEED = 0.1f;
-    public static boolean cameraOnDefaultPosition = false;
     public static boolean inPause = true;
     public static MenuType menu = MenuType.MAIN;
     public static float savedSpeed = GAME_DEFAULT_SPEED;
@@ -62,6 +62,23 @@ public class RunnerGame implements GameLogic {
         pipelineHandler.init();
         player = new Player();
         floor = new Floor();
+        glfwSetKeyCallback(window.getWindow(), (win, key, scancode, action, mods) -> {
+            if (window.isKeyPressed(GLFW_KEY_ESCAPE)) {
+                if (menu.equals(MenuType.IN_GAME)) {
+                    menu = MenuType.PAUSE;
+                    inPause = true;
+                } else if (menu.equals(MenuType.PAUSE)) {
+                    menu = MenuType.IN_GAME;
+                    inPause = false;
+                }
+            }
+            if (window.isKeyPressed(GLFW_KEY_C)) {
+                cameraOnDefaultPosition = true;
+            }
+            if (window.isKeyPressed(GLFW_KEY_F)) {
+                renderer.switchFog();
+            }
+        });
     }
 
     @Override

@@ -2,8 +2,6 @@ package edu.school21.game.utils.types;
 
 import edu.school21.utils.RandomGenerator;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public enum ClusterType {

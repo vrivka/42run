@@ -2,8 +2,6 @@ package edu.school21.engine.window;
 
 import edu.school21.engine.window.exceptions.WindowCreationFailException;
 import edu.school21.engine.window.exceptions.WindowInitFailException;
-import edu.school21.game.RunnerGame;
-import edu.school21.game.hud.MenuType;
 
 import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -71,21 +69,6 @@ public class Window {
         if (window == NULL) {
             throw new WindowCreationFailException("Failed to create the GLFW window");
         }
-
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if (isKeyPressed(GLFW_KEY_ESCAPE)) {
-                if (RunnerGame.menu.equals(MenuType.IN_GAME)) {
-                    RunnerGame.menu = MenuType.PAUSE;
-                    RunnerGame.inPause = true;
-                } else if (RunnerGame.menu.equals(MenuType.PAUSE)) {
-                    RunnerGame.menu = MenuType.IN_GAME;
-                    RunnerGame.inPause = false;
-                }
-            }
-            if (isKeyPressed(GLFW_KEY_C)) {
-                RunnerGame.cameraOnDefaultPosition = true;
-            }
-        });
 
         GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(window, (videoMode.width() - width) / 2, (videoMode.height() - height) / 2);

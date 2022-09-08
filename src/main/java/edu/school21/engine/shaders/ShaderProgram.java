@@ -1,5 +1,6 @@
 package edu.school21.engine.shaders;
 
+import edu.school21.engine.render.Fog;
 import edu.school21.engine.shaders.exceptions.*;
 
 import org.joml.Matrix4f;
@@ -41,6 +42,12 @@ public class ShaderProgram {
         uniforms.put(uniformName, uniformLocation);
     }
 
+    public void createFogUniform(String uniformName) {
+        createUniform(uniformName + ".activ");
+        createUniform(uniformName + ".color");
+        createUniform(uniformName + ".density");
+    }
+
     public void setUniform(String uniformName, Matrix4f matrix) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer uniformBuffer = stack.mallocFloat(MATRIX_SIZE);
@@ -56,6 +63,16 @@ public class ShaderProgram {
 
     public void setUniform(String uniformName, int integer) {
         glUniform1i(uniforms.get(uniformName), integer);
+    }
+
+    public void setUniform(String uniformName, float floaat) {
+        glUniform1f(uniforms.get(uniformName), floaat);
+    }
+
+    public void setUniform(String uniformName, Fog fog) {
+        setUniform(uniformName + ".activ", fog.isActive() ? 1 : 0);
+        setUniform(uniformName + ".color", fog.getColor() );
+        setUniform(uniformName + ".density", fog.getDensity());
     }
 
     public void createVertexShader(String shaderSource) {
