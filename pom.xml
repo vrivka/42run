@@ -15,7 +15,7 @@
         <main.class.path>${project.groupId}.app.Main</main.class.path>
         <lwjgl.version>3.3.1</lwjgl.version>
         <joml.version>1.10.4</joml.version>
-        <lwjgl.natives>natives-macos</lwjgl.natives>
+        <lwjgl.natives>natives-windows</lwjgl.natives>
     </properties>
 
     <build>

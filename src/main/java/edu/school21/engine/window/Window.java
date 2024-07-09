@@ -75,7 +75,7 @@ public class Window {
 
         glfwMakeContextCurrent(window);
 
-        glfwSwapInterval(1);
+        glfwSwapInterval(0);
 
         glfwShowWindow(window);
 

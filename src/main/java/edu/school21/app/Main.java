@@ -7,13 +7,14 @@ import edu.school21.game.RunnerGame;
 public class Main {
     private static final int WINDOW_WIDTH = 1600;
     private static final int WINDOW_HEIGHT = 900;
+    private static final double FPS = 60.0;
     public static final String WINDOW_TITLE = "42run";
     public static final int ERROR_EXIT_CODE = -1;
 
     public static void main(String[] args) {
         try {
             GameLogic gameLogic = new RunnerGame();
-            GameEngine gameEng = new GameEngine(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, gameLogic);
+            GameEngine gameEng = new GameEngine(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, FPS, gameLogic);
 
             gameEng.run();
         } catch (Exception e) {

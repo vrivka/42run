@@ -4,12 +4,16 @@ import edu.school21.engine.window.MouseHandler;
 import edu.school21.game.GameLogic;
 import edu.school21.engine.window.Window;
 
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
+
 public class GameEngine implements Runnable {
+    private final double FPS;
     private final Window window;
     private final GameLogic gameLogic;
     private final MouseHandler mouseHandler;
 
-    public GameEngine(String windowTitle, int width, int height, GameLogic gameLogic) {
+    public GameEngine(String windowTitle, int width, int height, double fps, GameLogic gameLogic) {
+        this.FPS = fps;
         this.window = new Window(windowTitle, width, height);
         this.gameLogic = gameLogic;
         this.mouseHandler = new MouseHandler();
@@ -38,8 +42,19 @@ public class GameEngine implements Runnable {
         gameLogic.init(window);
     }
 
-    protected void gameLoop() {
+    protected void gameLoop() throws InterruptedException {
+        double sigleFrameTime = 1.0 / FPS;
+        double lastTime = 0.0;
+        double currentTime;
+        double sleepTime;
+
         while (!window.isShouldClose()) {
+            currentTime = glfwGetTime();
+            if (currentTime - lastTime < sigleFrameTime) {
+                sleepTime = (sigleFrameTime - (currentTime - lastTime)) * 1000.0;
+                Thread.sleep((long) sleepTime);
+            }
+            lastTime = glfwGetTime();
             input();
             update();
             render();
